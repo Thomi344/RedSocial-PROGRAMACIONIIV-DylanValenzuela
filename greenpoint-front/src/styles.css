@@ -1,0 +1,17 @@
+
+/* You can add global styles to this file, and also import other style files */
+@import 'tailwindcss';
+
+@theme {
+  /* --- LA PALETA VERDE GREENPOINT --- */
+  --color-greenpoint-light: #4ade80;   /* Verde claro (Ideal para hovers en botones) */
+  --color-greenpoint: #1DB954;         /* EL VERDE PRINCIPAL (Vibrante, estilo Spotify/Razer) */
+  --color-greenpoint-dark: #15803d;    /* Verde profundo (Para bordes o estados de "presionado") */
+  --color-greenpoint-glow: #00ff7f;    /* Verde neón (Para las sombras de las tarjetas Glassmorphism) */
+
+  /* --- LA PALETA DEL MODO OSCURO --- */
+  --color-oscuro-fondo: #0B0F19;       /* El fondo principal de toda la pantalla (Súper profundo) */
+  --color-oscuro-tarjeta: #151B2B;     /* El fondo de las publicaciones o modales (Un poco más claro) */
+  --color-oscuro-input: #1E293B;       /* El fondo de las cajas de texto */
+  --color-oscuro-borde: #334155;       /* Para líneas divisorias sutiles */
+}

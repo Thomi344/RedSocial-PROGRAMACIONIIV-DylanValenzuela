@@ -1,0 +1,83 @@
+<div class="min-h-screen flex items-center justify-center bg-oscuro-fondo relative overflow-hidden text-white font-sans px-4">
+    
+    <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-greenpoint/20 rounded-full blur-[100px]"></div>
+    <div class="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-greenpoint-dark/30 rounded-full blur-[100px]"></div>
+
+    <div class="relative w-full max-w-md p-10 bg-white/5 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] z-10">
+        
+        <h2 class="text-3xl font-bold text-center mb-8 tracking-wider">
+        Green<span class="text-greenpoint">Point</span>
+        </h2>
+
+        <form [formGroup]="miFormulario" (ngSubmit)="enviarForm()">
+        
+        <div class="mb-6 relative">
+            <label class="text-xs text-gray-400 uppercase tracking-wide">Usuario o correo</label>
+            <div class="relative mt-1">
+            <input 
+                type="text" 
+                formControlName="identificador"
+                class="w-full bg-oscuro-input/50 border-b-2 border-oscuro-borde py-3 pl-3 pr-10 rounded-t-md text-white focus:outline-none focus:border-greenpoint focus:bg-oscuro-input transition-colors peer"
+                placeholder="Ingresá tu usuario"
+            >
+            </div>
+            <span *ngIf="identificador?.touched && identificador?.invalid" class="text-red-400 text-xs mt-2 block">
+            Este campo es obligatorio.
+            </span>
+        </div>
+
+        <div class="mb-8 relative">
+            <label class="text-xs text-gray-400 uppercase tracking-wide">Contraseña</label>
+            <div class="relative mt-1">
+            <input 
+                type="password" 
+                formControlName="clave"
+                class="w-full bg-oscuro-input/50 border-b-2 border-oscuro-borde py-3 pl-3 pr-10 rounded-t-md text-white focus:outline-none focus:border-greenpoint focus:bg-oscuro-input transition-colors peer"
+                placeholder="••••••••"
+            >
+            </div>
+            <div *ngIf="clave?.touched && clave?.invalid" class="text-red-400 text-xs mt-2">
+            <span *ngIf="clave?.errors?.['required']" class="block">La contraseña es obligatoria.</span>
+            <span *ngIf="clave?.errors?.['pattern']" class="block">Mínimo 8 caracteres, 1 mayúscula y 1 número.</span>
+            </div>
+        </div>
+
+        <button 
+            type="submit" 
+            [disabled]="cargando()"
+            class="w-full bg-greenpoint hover:bg-greenpoint-light text-oscuro-fondo font-bold py-3 rounded-lg transition-all duration-300 transform hover:scale-[1.02] active:scale-95 flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+            <span *ngIf="!cargando()">Iniciar sesión</span>
+            <span *ngIf="cargando()" class="flex items-center gap-2">
+            Conectando...
+            </span>
+        </button>
+
+        </form>
+
+        <div class="mt-6 border-t border-oscuro-borde pt-6">
+        <p class="text-xs text-center text-gray-400 mb-4">Accesos de prueba rápidos</p>
+        <div class="flex justify-center gap-2">
+            <button type="button" (click)="loginRapido('admin', 'Admin123')" class="px-3 py-1.5 bg-oscuro-input hover:bg-oscuro-borde border border-oscuro-borde rounded text-xs transition-colors">Admin</button>
+            <button type="button" (click)="loginRapido('usuario1', 'User1234')" class="px-3 py-1.5 bg-oscuro-input hover:bg-oscuro-borde border border-oscuro-borde rounded text-xs transition-colors">User 1</button>
+        </div>
+        </div>
+
+        <p class="text-center text-sm text-gray-400 mt-8">
+        ¿No tenés una cuenta? 
+        <a routerLink="/registro" class="text-greenpoint hover:text-greenpoint-light font-semibold hover:underline transition-colors">Registrate acá</a>
+        </p>
+
+    </div>
+    </div>
+
+    <div *ngIf="mostrarModal()" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+    <div class="bg-oscuro-tarjeta border-t-4 p-8 rounded-2xl shadow-2xl w-full max-w-sm text-center transform transition-all"
+        [ngClass]="esError() ? 'border-red-500' : 'border-greenpoint'">
+        <p class="text-white text-lg mb-6">{{ mensajeModal() }}</p>
+        <button (click)="cerrarModal()" 
+                class="w-full py-2 px-4 rounded-lg text-oscuro-fondo font-bold transition-colors"
+                [ngClass]="esError() ? 'bg-red-500 hover:bg-red-400' : 'bg-greenpoint hover:bg-greenpoint-light'">
+        Entendido
+        </button>
+    </div>
+</div>
