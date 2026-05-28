@@ -6,4 +6,4 @@ dist/
 *.env
 
 # --- Proteger los entornos de Angular ---
-**/src/environments/environment.ts
+**/src/app/environments/environment.ts
