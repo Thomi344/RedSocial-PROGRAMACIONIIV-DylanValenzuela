@@ -1,0 +1,9 @@
+# --- Ignorar carpetas de dependencias de ambos proyectos ---
+**/node_modules/
+dist/
+.angular/
+.nestjs/
+*.env
+
+# --- Proteger los entornos de Angular ---
+**/src/environments/environment.ts

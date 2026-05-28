@@ -1,7 +1,9 @@
 <div class="min-h-screen py-10 flex items-center justify-center bg-oscuro-fondo relative overflow-hidden text-white font-sans px-4">
     
-    <div class="absolute top-[-10%] right-[-10%] w-96 h-96 bg-greenpoint/20 rounded-full blur-[100px]"></div>
-    <div class="absolute bottom-[-10%] left-[-10%] w-96 h-96 bg-greenpoint-dark/30 rounded-full blur-[100px]"></div>
+    <div class="absolute top-[-10%] right-[-10%] w-96 h-96 bg-greenpoint/15 rounded-full blur-[120px]"></div>
+    <div class="absolute bottom-[-10%] left-[-10%] w-96 h-96 bg-greenpoint-dark/25 rounded-full blur-[120px]"></div>
+
+    <div class="hidden md:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] bg-gradient-to-bl from-greenpoint/20 to-emerald-500/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
 
     <div class="relative w-full max-w-2xl p-8 md:p-10 bg-white/5 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] z-10">
         
@@ -16,25 +18,25 @@
             
             <div>
             <label class="text-xs text-gray-400 uppercase tracking-wide">Nombre</label>
-            <input type="text" formControlName="nombre" class="w-full mt-1 bg-oscuro-input/50 border-b-2 border-oscuro-borde py-2.5 pl-3 rounded-t-md text-white focus:outline-none focus:border-greenpoint focus:bg-oscuro-input transition-colors">
+            <input type="text" formControlName="nombre" class="w-full mt-1 bg-white/5 border-b-2 border-oscuro-borde py-2.5 pl-3 rounded-t-md text-white focus:outline-none focus:border-greenpoint focus:bg-oscuro-input transition-colors">
             <span *ngIf="nombre?.touched && nombre?.invalid" class="text-red-400 text-xs mt-1 block">Requerido.</span>
             </div>
 
             <div>
             <label class="text-xs text-gray-400 uppercase tracking-wide">Apellido</label>
-            <input type="text" formControlName="apellido" class="w-full mt-1 bg-oscuro-input/50 border-b-2 border-oscuro-borde py-2.5 pl-3 rounded-t-md text-white focus:outline-none focus:border-greenpoint focus:bg-oscuro-input transition-colors">
+            <input type="text" formControlName="apellido" class="w-full mt-1 bg-white/5 border-b-2 border-oscuro-borde py-2.5 pl-3 rounded-t-md text-white focus:outline-none focus:border-greenpoint focus:bg-oscuro-input transition-colors">
             <span *ngIf="apellido?.touched && apellido?.invalid" class="text-red-400 text-xs mt-1 block">Requerido.</span>
             </div>
 
             <div>
             <label class="text-xs text-gray-400 uppercase tracking-wide">Nombre de usuario</label>
-            <input type="text" formControlName="nombreUsuario" class="w-full mt-1 bg-oscuro-input/50 border-b-2 border-oscuro-borde py-2.5 pl-3 rounded-t-md text-white focus:outline-none focus:border-greenpoint focus:bg-oscuro-input transition-colors">
+            <input type="text" formControlName="nombreUsuario" class="w-full mt-1 bg-white/5 border-b-2 border-oscuro-borde py-2.5 pl-3 rounded-t-md text-white focus:outline-none focus:border-greenpoint focus:bg-oscuro-input transition-colors">
             <span *ngIf="nombreUsuario?.touched && nombreUsuario?.invalid" class="text-red-400 text-xs mt-1 block">Requerido.</span>
             </div>
 
             <div>
             <label class="text-xs text-gray-400 uppercase tracking-wide">Nacimiento</label>
-            <input type="date" formControlName="fechaNacimiento" class="w-full mt-1 bg-oscuro-input/50 border-b-2 border-oscuro-borde py-2.5 pl-3 rounded-t-md text-white focus:outline-none focus:border-greenpoint focus:bg-oscuro-input transition-colors [color-scheme:dark]">
+            <input type="date" formControlName="fechaNacimiento" class="w-full mt-1 bg-white/5 border-b-2 border-oscuro-borde py-2.5 pl-3 rounded-t-md text-white focus:outline-none focus:border-greenpoint focus:bg-oscuro-input transition-colors [color-scheme:dark]">
             <span *ngIf="fechaNacimiento?.touched && fechaNacimiento?.invalid" class="text-red-400 text-xs mt-1 block">Requerido.</span>
             </div>
 
@@ -42,13 +44,13 @@
 
         <div class="mb-5 relative">
             <label class="text-xs text-gray-400 uppercase tracking-wide">Correo electrónico</label>
-            <input type="email" formControlName="correo" class="w-full mt-1 bg-oscuro-input/50 border-b-2 border-oscuro-borde py-2.5 pl-3 rounded-t-md text-white focus:outline-none focus:border-greenpoint focus:bg-oscuro-input transition-colors">
+            <input type="email" formControlName="correo" class="w-full mt-1 bg-white/5 border-b-2 border-oscuro-borde py-2.5 pl-3 rounded-t-md text-white focus:outline-none focus:border-greenpoint focus:bg-oscuro-input transition-colors">
             <span *ngIf="correo?.touched && correo?.invalid" class="text-red-400 text-xs mt-1 block">Ingresá un correo válido.</span>
         </div>
 
         <div class="mb-5 relative">
             <label class="text-xs text-gray-400 uppercase tracking-wide">Descripción breve</label>
-            <textarea formControlName="descripcion" rows="2" class="w-full mt-1 bg-oscuro-input/50 border-b-2 border-oscuro-borde py-2.5 pl-3 rounded-t-md text-white focus:outline-none focus:border-greenpoint focus:bg-oscuro-input transition-colors resize-none" placeholder="Contanos algo sobre vos..."></textarea>
+            <textarea formControlName="descripcion" rows="2" class="w-full mt-1 bg-white/5 border-b-2 border-oscuro-borde py-2.5 pl-3 rounded-t-md text-white focus:outline-none focus:border-greenpoint focus:bg-oscuro-input transition-colors resize-none" placeholder="Contanos algo sobre vos..."></textarea>
         </div>
 
         <div class="mb-6">
@@ -59,7 +61,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
             <div>
             <label class="text-xs text-gray-400 uppercase tracking-wide">Contraseña</label>
-            <input type="password" formControlName="clave" class="w-full mt-1 bg-oscuro-input/50 border-b-2 border-oscuro-borde py-2.5 pl-3 rounded-t-md text-white focus:outline-none focus:border-greenpoint focus:bg-oscuro-input transition-colors">
+            <input type="password" formControlName="clave" class="w-full mt-1 bg-white/5 border-b-2 border-oscuro-borde py-2.5 pl-3 rounded-t-md text-white focus:outline-none focus:border-greenpoint focus:bg-oscuro-input transition-colors">
             <div *ngIf="clave?.touched && clave?.invalid" class="text-red-400 text-xs mt-1">
                 <span *ngIf="clave?.errors?.['pattern']">8 caracteres, 1 mayúscula y 1 número.</span>
             </div>
@@ -67,13 +69,19 @@
 
             <div>
             <label class="text-xs text-gray-400 uppercase tracking-wide">Repetir contraseña</label>
-            <input type="password" formControlName="repiteClave" class="w-full mt-1 bg-oscuro-input/50 border-b-2 border-oscuro-borde py-2.5 pl-3 rounded-t-md text-white focus:outline-none focus:border-greenpoint focus:bg-oscuro-input transition-colors">
+            <input type="password" formControlName="repiteClave" class="w-full mt-1 bg-white/5 border-b-2 border-oscuro-borde py-2.5 pl-3 rounded-t-md text-white focus:outline-none focus:border-greenpoint focus:bg-oscuro-input transition-colors">
             </div>
         </div>
 
-        <button type="submit" [disabled]="cargando()" class="w-full bg-greenpoint hover:bg-greenpoint-light text-oscuro-fondo font-bold py-3 rounded-lg transition-all duration-300 disabled:opacity-50">
+        <button type="submit" [disabled]="cargando()" class="w-full bg-greenpoint hover:bg-greenpoint-light text-oscuro-fondo font-bold py-3 rounded-lg transition-all duration-300 disabled:opacity-50 transform hover:scale-[1.01] active:scale-95 flex justify-center items-center">
             <span *ngIf="!cargando()">Crear cuenta</span>
-            <span *ngIf="cargando()">Registrando...</span>
+            <span *ngIf="cargando()" class="flex items-center gap-2">
+                <svg class="animate-spin h-5 w-5 text-oscuro-fondo" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Registrando...
+            </span>
         </button>
 
         </form>
@@ -84,9 +92,9 @@
         </p>
 
     </div>
-    </div>
+</div>
 
-    <div *ngIf="mostrarModal()" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+<div *ngIf="mostrarModal()" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
     <div class="bg-oscuro-tarjeta border-t-4 p-8 rounded-2xl shadow-2xl w-full max-w-sm text-center transform transition-all"
         [ngClass]="esError() ? 'border-red-500' : 'border-greenpoint'">
         <p class="text-white text-lg mb-6">{{ mensajeModal() }}</p>
