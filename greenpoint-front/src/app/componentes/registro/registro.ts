@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http'; // --- Importamos httpclient para pegarle a cloudinary ---
 import { confirmarClaveValidator } from '../../validators/clave.validator';
-import { environment } from '../../environments/environment.example';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-registro',
