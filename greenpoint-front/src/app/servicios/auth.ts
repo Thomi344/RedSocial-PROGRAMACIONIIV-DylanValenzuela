@@ -5,7 +5,7 @@ import {Observable} from 'rxjs';
   providedIn: 'root',
 })
 export class Auth {
-  private apiUrl = 'http://localhost:3000/autenticacion';
+  private apiUrl = 'https://greenpoint-back.onrender.com/autenticacion'; // --- URL base del backend para autenticación
 
   constructor(private http: HttpClient) {}
 
