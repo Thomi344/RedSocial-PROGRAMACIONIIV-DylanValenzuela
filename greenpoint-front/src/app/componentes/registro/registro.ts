@@ -2,10 +2,12 @@ import { Component, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
-import { HttpClient } from '@angular/common/http'; // --- Importamos httpclient para pegarle a cloudinary ---
+import { HttpClient } from '@angular/common/http'; // ---  httpclient para pegarle a cloudinary ---
 import { confirmarClaveValidator } from '../../validators/clave.validator';
 import { environment } from '../../environments/environment';
-
+// --- Auth ---
+import { Auth } from '../../servicios/auth';
+import {firstValueFrom} from 'rxjs'; // --- Para convertir el Observable del servicio Auth a Promesa y usar async/await ---
 @Component({
   selector: 'app-registro',
   standalone: true,
@@ -29,7 +31,9 @@ export class Registro implements OnInit {
 
   constructor(
     private router: Router,
-    private http: HttpClient // --- Inyectamos el servicio http ---
+    private http: HttpClient, // --- Inyectamos el servicio http ---
+    private authService: Auth // --- Inyectamos el servicio de autenticación ---
+
   ) {}
 
   ngOnInit(): void {
@@ -103,35 +107,35 @@ export class Registro implements OnInit {
     this.cargando.set(true);
 
     try {
-      // --- 1. Subimos primero la foto a la nube de forma transparente ---
+      // --- 1. Sube primero la foto a la nube de forma transparente ---
       const urlDeLaImagen = await this.subirACloudinary(this.fotoTemporal);
 
-      // --- 2. Armamos el JSON final con todos los strings requeridos por nestjs ---
-      const datosFinalesParaBackend = {
-        nombre: this.miFormulario.value.nombre,
-        apellido: this.miFormulario.value.apellido,
-        correo: this.miFormulario.value.correo,
-        nombreUsuario: this.miFormulario.value.nombreUsuario,
-        fechaNacimiento: this.miFormulario.value.fechaNacimiento,
-        descripcion: this.miFormulario.value.descripcion,
-        clave: this.miFormulario.value.clave,
-        imagenUrl: urlDeLaImagen 
+      // --- 2. Arma el JSON mapeando los nombres EXACTOS que pide tu NestJS ---
+      const datosParaBackend = {
+        nombre: this.miFormulario.value.nombre + ' ' + this.miFormulario.value.apellido, // nombre y apellido
+        email: this.miFormulario.value.correo, 
+        contrasena: this.miFormulario.value.clave, 
+        fotoPerfil: urlDeLaImagen 
       };
 
-      // --- Aca iriá el post hacia  NestJS mas adelante ---
-      console.log('Datos listos para NestJS:', datosFinalesParaBackend);
+      console.log('Enviando a NestJS...', datosParaBackend);
 
-      setTimeout(() => {
+      // --- 3. Enviam los datos al backend y espera la respuesta ---
+      // Usamos firstValueFrom para convertir el Observable del AuthService en Promesa
+      const respuestaBackend = await firstValueFrom(this.authService.registrarUsuario(datosParaBackend));
+        // --- 4. Si todo salió bien, limpiamos y mostramos el éxito ---
+        console.log('Respuesta del servidor:', respuestaBackend);
         this.miFormulario.reset();
         this.fotoTemporal = null;
-        this.abrirModal('¡Usuario registrado con exito! Bienvenido a la red social.', false);
-      }, 1500);
-
-    } catch (err) {
-      this.abrirModal('Ocurrio un error al subir la imagen o al conectar con el servidor.', true);
-      console.error('Error critico en el proceso de registro:', err);
-      this.cargando.set(false);
-    }
+        this.abrirModal('¡Usuario registrado con éxito en la base de datos!', false);
+        
+      } catch (err: any) {
+        // Captura el mensaje de error real que nos manda NestJS (ej: "El correo ya existe")
+        const mensajeError = err.error?.message || 'Ocurrió un error al conectar con el servidor.';
+        this.abrirModal(mensajeError, true);
+        console.error('Error crítico:', err);
+        this.cargando.set(false);
+      }
   }
 
   // --- Control del modal ---

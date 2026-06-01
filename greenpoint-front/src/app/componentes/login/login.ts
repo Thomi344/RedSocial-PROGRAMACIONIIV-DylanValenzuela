@@ -2,7 +2,9 @@ import { Component, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
-
+// --- Auth ---
+import { Auth } from '../../servicios/auth';
+import {firstValueFrom} from 'rxjs'; // --- Para convertir el Observable del servicio Auth a Promesa y usar async/await ---
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -20,7 +22,7 @@ export class Login implements OnInit {
   esError = signal<boolean>(false);
   cargando = signal<boolean>(false);
 
-  constructor(private router: Router) {}
+  constructor(private router: Router,private authService: Auth) {}
 
   ngOnInit(): void {
     this.miFormulario = new FormGroup({
@@ -52,23 +54,33 @@ export class Login implements OnInit {
       return;
     }
 
-    // --- ACTIVAMOS EL LOADER CON SIGNALS ---
+    // --- ACTIVA EL LOADER ---
     this.cargando.set(true);
 
-    const { identificador, clave } = this.miFormulario.value;
+    // --- MAPEO DE DATOS PARA EL BACKEND ---
+    const datosBackend = {
+      email: this.miFormulario.value.identificador,
+      contrasena: this.miFormulario.value.clave
+    };
 
-    // --- SIMULACIÓN TEMPORAL HASTA CONECTAR CON LA API NESTJS ---
-    setTimeout(() => {
-      this.cargando.set(false);
+    try {
+      // --- LLAMADA A LA API ---
+      const respuestaBackend = await firstValueFrom(this.authService.loginUsuario(datosBackend));
       
-      const loginExitoso = true; 
+      console.log('Datos del usuario logueado:', respuestaBackend);
+      
+      // Apagamos el loader y mostramos éxito
+      this.cargando.set(false);
+      this.abrirModal('¡Acceso concedido! Entrando a GreenPoint...', false);
 
-      if (!loginExitoso) {
-        this.abrirModal('Credenciales incorrectas o usuario inexistente.', true);
-      } else {
-        this.abrirModal('¡Acceso concedido! Entrando a GreenPoint...', false);
-      }
-    }, 1500);
+    } catch (err: any) {
+      // Captura el error 401 del backend ("Credenciales inválidas")
+      const mensajeError = err.error?.message || 'Error de conexión con el servidor.';
+      
+      console.error('Error en login:', err);
+      this.cargando.set(false);
+      this.abrirModal(mensajeError, true);
+    }
   }
 
   // --- CONTROL DEL MODAL CON SIGNALS ---
