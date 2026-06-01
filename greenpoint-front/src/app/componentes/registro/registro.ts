@@ -118,7 +118,7 @@ export class Registro implements OnInit {
         imagenUrl: urlDeLaImagen 
       };
 
-      // --- SIMULACION: Aca irá el post hacia tu NestJS mas adelante ---
+      // --- Aca iriá el post hacia  NestJS mas adelante ---
       console.log('Datos listos para NestJS:', datosFinalesParaBackend);
 
       setTimeout(() => {
