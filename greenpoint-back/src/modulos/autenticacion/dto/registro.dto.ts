@@ -6,6 +6,10 @@ export class RegistroDto {
     @IsNotEmpty({ message: 'El nombre es obligatorio' })
     nombre!: string;
 
+    @IsString()
+    @IsNotEmpty({ message: 'El nombre de usuario es obligatorio' })
+    nombreUsuario!: string;
+    
     @IsEmail({}, { message: 'El formato del email no es válido' })
     email!: string;
 

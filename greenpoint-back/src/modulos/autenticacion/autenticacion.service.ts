@@ -11,12 +11,12 @@ export class AutenticacionService {
 
     // --- Registrar usuario ---
     async registrar(registroDto: RegistroDto){
-        const {nombre,email,contrasena,fotoPerfil}= registroDto;
+        const {nombre,nombreUsuario,email,contrasena,fotoPerfil}= registroDto;
 
-        // --- Validar si el email existe ---
-        const usuarioExiste = await this.usuarioModel.findOne({email});
+        // --- Validar si el email o nombre de usuario existen ---
+        const usuarioExiste = await this.usuarioModel.findOne({$or: [{ email }, { nombreUsuario }]});
         if(usuarioExiste){
-            throw new BadRequestException('El correo electrónico ya está registrado');
+            throw new BadRequestException('El correo electrónico o el nombre de usuario ya están registrados');
         }
         
         // --- Encriptar contraseña ---
@@ -27,6 +27,7 @@ export class AutenticacionService {
         // --- Crear nuevo usuario ---
         const nuevoUsuario = new this.usuarioModel({
             nombre,
+            nombreUsuario,
             email,
             contrasena: contrasenaEncriptada,
             fotoPerfil: fotoPerfil || '', // Si no se proporciona una foto, se asigna una cadena vacía
@@ -38,6 +39,7 @@ export class AutenticacionService {
             usuario: {
                 id: nuevoUsuario._id,
                 nombre: nuevoUsuario.nombre,
+                nombreUsuario: nuevoUsuario.nombreUsuario,
                 email: nuevoUsuario.email,
                 fotoPerfil: nuevoUsuario.fotoPerfil,
             },
@@ -46,10 +48,10 @@ export class AutenticacionService {
 
     // --- Logear usuario ---
     async login(loginDto: LoginDto){
-        const {email, contrasena} = loginDto;
+        const {identificador, contrasena} = loginDto;
 
         // --- Buscar usuario por email ---
-        const usuario = await this.usuarioModel.findOne({email});
+        const usuario = await this.usuarioModel.findOne({$or: [{ email: identificador }, { nombreUsuario: identificador }]});
         if(!usuario){
             throw new UnauthorizedException('Credenciales inválidas');
         }
@@ -65,6 +67,7 @@ export class AutenticacionService {
             mensaje: 'Inicio de sesión exitoso',
             usuario: {
                 id: usuario._id,
+                nombreUsuario: usuario.nombreUsuario,
                 nombre: usuario.nombre,
                 email: usuario.email,
                 fotoPerfil: usuario.fotoPerfil,

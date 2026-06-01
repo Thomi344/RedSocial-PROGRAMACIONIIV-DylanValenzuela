@@ -59,7 +59,7 @@ export class Login implements OnInit {
 
     // --- MAPEO DE DATOS PARA EL BACKEND ---
     const datosBackend = {
-      email: this.miFormulario.value.identificador,
+      identificador: this.miFormulario.value.identificador, // Puede ser correo o nombre de usuario
       contrasena: this.miFormulario.value.clave
     };
 

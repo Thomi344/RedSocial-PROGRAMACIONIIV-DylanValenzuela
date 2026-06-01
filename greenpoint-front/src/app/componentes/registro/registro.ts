@@ -113,6 +113,7 @@ export class Registro implements OnInit {
       // --- 2. Arma el JSON mapeando los nombres EXACTOS que pide tu NestJS ---
       const datosParaBackend = {
         nombre: this.miFormulario.value.nombre + ' ' + this.miFormulario.value.apellido, // nombre y apellido
+        nombreUsuario: this.miFormulario.value.nombreUsuario,
         email: this.miFormulario.value.correo, 
         contrasena: this.miFormulario.value.clave, 
         fotoPerfil: urlDeLaImagen 
@@ -128,7 +129,7 @@ export class Registro implements OnInit {
         this.miFormulario.reset();
         this.fotoTemporal = null;
         this.abrirModal('¡Usuario registrado con éxito en la base de datos!', false);
-        
+
       } catch (err: any) {
         // Captura el mensaje de error real que nos manda NestJS (ej: "El correo ya existe")
         const mensajeError = err.error?.message || 'Ocurrió un error al conectar con el servidor.';

@@ -7,7 +7,8 @@ export type UsuarioDocument = Usuario;
 export class Usuario {
     @Prop({ required: true, trim: true })
     nombre!: string;
-
+    @Prop({ required: true, unique: true })
+    nombreUsuario!: string;
     @Prop({ required: true, unique: true, lowercase: true, trim: true })
     email!: string;
 
