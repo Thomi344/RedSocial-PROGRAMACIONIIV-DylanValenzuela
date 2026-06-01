@@ -10,7 +10,7 @@ export class AutenticacionController {
     // --- Ruta para registrar un nuevo usuario ---
     @Post('registro')
     async registrarUsuario(@Body() registroDto: RegistroDto){
-        // --- El DTO se validará automáticamente gracias a ValidationPipe configurado en main.ts ---
+        // --- El DTO se validará automáticamente gracias a ValidationPipe ---
         return this.autenticacionService.registrar(registroDto);
     }
 
