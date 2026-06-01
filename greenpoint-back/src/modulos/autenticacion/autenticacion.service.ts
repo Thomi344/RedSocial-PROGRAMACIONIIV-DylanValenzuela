@@ -1,8 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, UnauthorizedException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import {Usuario, UsuarioDocument} from '../usuarios/entidades/usuario.schema';
 import {RegistroDto} from './dto/registro.dto';
+import {LoginDto} from './dto/login.dto';
 import bcrypt from 'bcryptjs';
 @Injectable()
 export class AutenticacionService {
@@ -43,5 +44,32 @@ export class AutenticacionService {
         };
     }   
 
+    // --- Logear usuario ---
+    async login(loginDto: LoginDto){
+        const {email, contrasena} = loginDto;
+
+        // --- Buscar usuario por email ---
+        const usuario = await this.usuarioModel.findOne({email});
+        if(!usuario){
+            throw new UnauthorizedException('Credenciales inválidas');
+        }
+
+        // --- Comparar contraseña ---
+        const esContrasenaValida = await bcrypt.compare(contrasena, usuario.contrasena);
+        if(!esContrasenaValida){
+            throw new UnauthorizedException('Credenciales inválidas');
+        }
+
+        // --- Retornar datos del usuario logeado (sin la contraseña) ---
+        return {
+            mensaje: 'Inicio de sesión exitoso',
+            usuario: {
+                id: usuario._id,
+                nombre: usuario.nombre,
+                email: usuario.email,
+                fotoPerfil: usuario.fotoPerfil,
+            },
+        };
+    }
 }
 
