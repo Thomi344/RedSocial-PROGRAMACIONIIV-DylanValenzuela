@@ -4,14 +4,20 @@ import { Model } from 'mongoose';
 import {Usuario, UsuarioDocument} from '../usuarios/entidades/usuario.schema';
 import {RegistroDto} from './dto/registro.dto';
 import {LoginDto} from './dto/login.dto';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import bcrypt from 'bcryptjs';
+
 @Injectable()
 export class AutenticacionService {
-    constructor( @InjectModel(Usuario.name) private usuarioModel: Model<UsuarioDocument>) {}
+    
+    constructor( 
+        @InjectModel(Usuario.name) private usuarioModel: Model<UsuarioDocument>,
+        private cloudinaryService: CloudinaryService 
+    ) {}
 
     // --- Registrar usuario ---
-    async registrar(registroDto: RegistroDto){
-        const {nombre,nombreUsuario,email,contrasena,fotoPerfil}= registroDto;
+    async registrar(registroDto: RegistroDto, file: Express.Multer.File){
+        const { nombre, nombreUsuario, email, contrasena } = registroDto;
 
         // --- Validar si el email o nombre de usuario existen ---
         const usuarioExiste = await this.usuarioModel.findOne({$or: [{ email }, { nombreUsuario }]});
@@ -19,8 +25,11 @@ export class AutenticacionService {
             throw new BadRequestException('El correo electrónico o el nombre de usuario ya están registrados');
         }
         
+        // --- SUBIR LA IMAGEN A CLOUDINARY ---
+        // archivo en memoria al servicio de Cloudinary
+        const fotoSubida = await this.cloudinaryService.uploadImage(file);
+
         // --- Encriptar contraseña ---
-        // --- 'salt' es un valor aleatorio que se agrega a la contraseña antes de encriptarla para hacerla más segura ---
         const salt = await bcrypt.genSalt(10);
         const contrasenaEncriptada = await bcrypt.hash(contrasena, salt);
 
@@ -30,9 +39,12 @@ export class AutenticacionService {
             nombreUsuario,
             email,
             contrasena: contrasenaEncriptada,
-            fotoPerfil: fotoPerfil || '', // Si no se proporciona una foto, se asigna una cadena vacía
+            // Guardam la URL segura que acaba de generar Cloudinary
+            fotoPerfil: fotoSubida.secure_url, 
         });
+        
         await nuevoUsuario.save();
+        
         // --- Retornar datos del nuevo usuario (sin la contraseña) ---
         return {
             mensaje: 'Usuario registrado exitosamente',
@@ -44,8 +56,7 @@ export class AutenticacionService {
                 fotoPerfil: nuevoUsuario.fotoPerfil,
             },
         };
-    }   
-
+    }
     // --- Logear usuario ---
     async login(loginDto: LoginDto){
         const {identificador, contrasena} = loginDto;
