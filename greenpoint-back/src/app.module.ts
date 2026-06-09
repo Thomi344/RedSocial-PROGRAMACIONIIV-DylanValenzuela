@@ -4,8 +4,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UsuariosModule } from './modulos/usuarios/usuarios.module';
 import { AutenticacionModule } from './modulos/autenticacion/autenticacion.module';
 import { PublicacionesModule } from './modulos/publicaciones/publicaciones.module';
-import { CloudinaryService } from './cloudinary/cloudinary/cloudinary.service';
-import { CloudinaryModule } from './modulos/cloudinary/cloudinary/cloudinary.module';
 import { CloudinaryModule } from './modulos/cloudinary/cloudinary.module';
 
 @Module({
@@ -17,6 +15,6 @@ import { CloudinaryModule } from './modulos/cloudinary/cloudinary.module';
     PublicacionesModule,
     CloudinaryModule,
   ],
-  providers: [CloudinaryService],
+  providers: [],
 })
 export class AppModule {}
