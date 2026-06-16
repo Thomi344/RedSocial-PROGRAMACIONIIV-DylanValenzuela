@@ -1,82 +1,78 @@
-<div class="min-h-screen py-10 flex items-center justify-center bg-oscuro-fondo relative overflow-hidden text-white font-sans px-4">
+<div class="min-h-screen py-4 flex items-center justify-center text-white font-sans px-4 bg-black bg-cover bg-center bg-no-repeat bg-fixed" 
+     style="background-image: url('greenpoint-background.png');">
     
-    <div class="absolute top-[-10%] right-[-10%] w-96 h-96 bg-greenpoint/15 rounded-full blur-[120px]"></div>
-    <div class="absolute bottom-[-10%] left-[-10%] w-96 h-96 bg-greenpoint-dark/25 rounded-full blur-[120px]"></div>
-
-    <div class="hidden md:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] bg-gradient-to-bl from-greenpoint/20 to-emerald-500/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
-
-    <div class="relative w-full max-w-2xl p-8 md:p-10 bg-white/5 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] z-10">
+    <div class="w-full max-w-2xl p-6 md:p-8 bg-black/60 backdrop-blur-xl border border-white/20 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.7)]">
         
-        <h2 class="text-3xl font-bold text-center mb-2 tracking-wider">
-        Sumate a Green<span class="text-greenpoint">Point</span>
+        <h2 class="text-2xl md:text-3xl font-bold text-center mb-1 tracking-wider">
+        Sumate a Green<span class="text-green-400">Point</span>
         </h2>
-        <p class="text-center text-gray-400 mb-8 text-sm">Creá tu perfil y empezá a conectar.</p>
+        <p class="text-center text-gray-300 mb-5 text-xs md:text-sm">Creá tu perfil y empezá a conectar.</p>
 
         <form [formGroup]="miFormulario" (ngSubmit)="enviarForm()">
         
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             
             <div>
-            <label class="text-xs text-gray-400 uppercase tracking-wide">Nombre</label>
-            <input type="text" formControlName="nombre" class="w-full mt-1 bg-white/5 border-b-2 border-oscuro-borde py-2.5 pl-3 rounded-t-md text-white focus:outline-none focus:border-greenpoint focus:bg-oscuro-input transition-colors">
-            <span *ngIf="nombre?.touched && nombre?.invalid" class="text-red-400 text-xs mt-1 block">Requerido.</span>
+            <label class="text-[10px] text-gray-300 uppercase tracking-wide">Nombre</label>
+            <input type="text" formControlName="nombre" class="w-full mt-1 bg-black/40 border-b-2 border-white/20 py-2 pl-3 rounded-t-md text-white text-sm focus:outline-none focus:border-green-400 transition-colors">
+            <span *ngIf="nombre?.touched && nombre?.invalid" class="text-red-400 text-xs mt-1 block font-semibold">Requerido.</span>
             </div>
 
             <div>
-            <label class="text-xs text-gray-400 uppercase tracking-wide">Apellido</label>
-            <input type="text" formControlName="apellido" class="w-full mt-1 bg-white/5 border-b-2 border-oscuro-borde py-2.5 pl-3 rounded-t-md text-white focus:outline-none focus:border-greenpoint focus:bg-oscuro-input transition-colors">
-            <span *ngIf="apellido?.touched && apellido?.invalid" class="text-red-400 text-xs mt-1 block">Requerido.</span>
+            <label class="text-[10px] text-gray-300 uppercase tracking-wide">Apellido</label>
+            <input type="text" formControlName="apellido" class="w-full mt-1 bg-black/40 border-b-2 border-white/20 py-2 pl-3 rounded-t-md text-white text-sm focus:outline-none focus:border-green-400 transition-colors">
+            <span *ngIf="apellido?.touched && apellido?.invalid" class="text-red-400 text-xs mt-1 block font-semibold">Requerido.</span>
             </div>
 
             <div>
-            <label class="text-xs text-gray-400 uppercase tracking-wide">Nombre de usuario</label>
-            <input type="text" formControlName="nombreUsuario" class="w-full mt-1 bg-white/5 border-b-2 border-oscuro-borde py-2.5 pl-3 rounded-t-md text-white focus:outline-none focus:border-greenpoint focus:bg-oscuro-input transition-colors">
-            <span *ngIf="nombreUsuario?.touched && nombreUsuario?.invalid" class="text-red-400 text-xs mt-1 block">Requerido.</span>
+            <label class="text-[10px] text-gray-300 uppercase tracking-wide">Nombre de usuario</label>
+            <input type="text" formControlName="nombreUsuario" class="w-full mt-1 bg-black/40 border-b-2 border-white/20 py-2 pl-3 rounded-t-md text-white text-sm focus:outline-none focus:border-green-400 transition-colors">
+            <span *ngIf="nombreUsuario?.touched && nombreUsuario?.invalid" class="text-red-400 text-xs mt-1 block font-semibold">Requerido.</span>
             </div>
 
             <div>
-            <label class="text-xs text-gray-400 uppercase tracking-wide">Nacimiento</label>
-            <input type="date" formControlName="fechaNacimiento" class="w-full mt-1 bg-white/5 border-b-2 border-oscuro-borde py-2.5 pl-3 rounded-t-md text-white focus:outline-none focus:border-greenpoint focus:bg-oscuro-input transition-colors [color-scheme:dark]">
-            <span *ngIf="fechaNacimiento?.touched && fechaNacimiento?.invalid" class="text-red-400 text-xs mt-1 block">Requerido.</span>
+            <label class="text-[10px] text-gray-300 uppercase tracking-wide">Nacimiento</label>
+            <input type="date" formControlName="fechaNacimiento" class="w-full mt-1 bg-black/40 border-b-2 border-white/20 py-2 pl-3 rounded-t-md text-white text-sm focus:outline-none focus:border-green-400 transition-colors [color-scheme:dark]">
+            <span *ngIf="fechaNacimiento?.touched && fechaNacimiento?.invalid" class="text-red-400 text-xs mt-1 block font-semibold">Requerido.</span>
             </div>
 
         </div>
 
-        <div class="mb-5 relative">
-            <label class="text-xs text-gray-400 uppercase tracking-wide">Correo electrónico</label>
-            <input type="email" formControlName="correo" class="w-full mt-1 bg-white/5 border-b-2 border-oscuro-borde py-2.5 pl-3 rounded-t-md text-white focus:outline-none focus:border-greenpoint focus:bg-oscuro-input transition-colors">
-            <span *ngIf="correo?.touched && correo?.invalid" class="text-red-400 text-xs mt-1 block">Ingresá un correo válido.</span>
+        <div class="mb-4 relative">
+            <label class="text-[10px] text-gray-300 uppercase tracking-wide">Correo electrónico</label>
+            <input type="email" formControlName="correo" class="w-full mt-1 bg-black/40 border-b-2 border-white/20 py-2 pl-3 rounded-t-md text-white text-sm focus:outline-none focus:border-green-400 transition-colors">
+            <span *ngIf="correo?.touched && correo?.invalid" class="text-red-400 text-xs mt-1 block font-semibold">Ingresá un correo válido.</span>
         </div>
 
-        <div class="mb-5 relative">
-            <label class="text-xs text-gray-400 uppercase tracking-wide">Descripción breve</label>
-            <textarea formControlName="descripcion" rows="2" class="w-full mt-1 bg-white/5 border-b-2 border-oscuro-borde py-2.5 pl-3 rounded-t-md text-white focus:outline-none focus:border-greenpoint focus:bg-oscuro-input transition-colors resize-none" placeholder="Contanos algo sobre vos..."></textarea>
+        <div class="mb-4 relative">
+            <label class="text-[10px] text-gray-300 uppercase tracking-wide">Descripción breve</label>
+            <textarea formControlName="descripcion" rows="1" class="w-full mt-1 bg-black/40 border-b-2 border-white/20 py-2 pl-3 rounded-t-md text-white text-sm focus:outline-none focus:border-green-400 transition-colors resize-none" placeholder="Contanos algo sobre vos..."></textarea>
         </div>
 
-        <div class="mb-6">
-            <label class="text-xs text-gray-400 uppercase tracking-wide block mb-2">Foto de perfil</label>
-            <input type="file" accept="image/*" (change)="onArchivoSeleccionado($event)" class="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-greenpoint/10 file:text-greenpoint hover:file:bg-greenpoint/20 transition-colors">
+        <div class="mb-4">
+            <label class="text-[10px] text-gray-300 uppercase tracking-wide block mb-1">Foto de perfil</label>
+            <input type="file" accept="image/*" (change)="onArchivoSeleccionado($event)" class="block w-full text-xs text-gray-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-green-500/20 file:text-green-400 hover:file:bg-green-500/30 transition-colors cursor-pointer">
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <div>
-            <label class="text-xs text-gray-400 uppercase tracking-wide">Contraseña</label>
-            <input type="password" formControlName="clave" class="w-full mt-1 bg-white/5 border-b-2 border-oscuro-borde py-2.5 pl-3 rounded-t-md text-white focus:outline-none focus:border-greenpoint focus:bg-oscuro-input transition-colors">
-            <div *ngIf="clave?.touched && clave?.invalid" class="text-red-400 text-xs mt-1">
+            <label class="text-[10px] text-gray-300 uppercase tracking-wide">Contraseña</label>
+            <input type="password" formControlName="clave" class="w-full mt-1 bg-black/40 border-b-2 border-white/20 py-2 pl-3 rounded-t-md text-white text-sm focus:outline-none focus:border-green-400 transition-colors">
+            <div *ngIf="clave?.touched && clave?.invalid" class="text-red-400 text-xs mt-1 font-semibold">
                 <span *ngIf="clave?.errors?.['pattern']">8 caracteres, 1 mayúscula y 1 número.</span>
             </div>
             </div>
 
             <div>
-            <label class="text-xs text-gray-400 uppercase tracking-wide">Repetir contraseña</label>
-            <input type="password" formControlName="repiteClave" class="w-full mt-1 bg-white/5 border-b-2 border-oscuro-borde py-2.5 pl-3 rounded-t-md text-white focus:outline-none focus:border-greenpoint focus:bg-oscuro-input transition-colors">
+            <label class="text-[10px] text-gray-300 uppercase tracking-wide">Repetir contraseña</label>
+            <input type="password" formControlName="repiteClave" class="w-full mt-1 bg-black/40 border-b-2 border-white/20 py-2 pl-3 rounded-t-md text-white text-sm focus:outline-none focus:border-green-400 transition-colors">
             </div>
         </div>
 
-        <button type="submit" [disabled]="cargando()" class="w-full bg-greenpoint hover:bg-greenpoint-light text-oscuro-fondo font-bold py-3 rounded-lg transition-all duration-300 disabled:opacity-50 transform hover:scale-[1.01] active:scale-95 flex justify-center items-center">
+        <button type="submit" [disabled]="cargando()" class="w-full bg-green-500 hover:bg-green-400 text-black font-bold py-2.5 rounded-lg transition-all duration-300 disabled:opacity-50 transform hover:scale-[1.01] active:scale-95 flex justify-center items-center">
             <span *ngIf="!cargando()">Crear cuenta</span>
-            <span *ngIf="cargando()" class="flex items-center gap-2">
-                <svg class="animate-spin h-5 w-5 text-oscuro-fondo" fill="none" viewBox="0 0 24 24">
+            <span *ngIf="cargando()" class="flex items-center gap-2 text-sm">
+                <svg class="animate-spin h-4 w-4 text-black" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
@@ -86,21 +82,21 @@
 
         </form>
 
-        <p class="text-center text-sm text-gray-400 mt-6">
+        <p class="text-center text-xs text-gray-300 mt-4">
         ¿Ya tenés cuenta? 
-        <a routerLink="/login" class="text-greenpoint hover:text-greenpoint-light font-semibold hover:underline transition-colors">Iniciá sesión acá</a>
+        <a routerLink="/login" class="text-green-400 font-semibold hover:text-green-300 hover:underline transition-colors">Iniciá sesión acá</a>
         </p>
 
     </div>
 </div>
 
-<div *ngIf="mostrarModal()" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
-    <div class="bg-oscuro-tarjeta border-t-4 p-8 rounded-2xl shadow-2xl w-full max-w-sm text-center transform transition-all"
-        [ngClass]="esError() ? 'border-red-500' : 'border-greenpoint'">
+<div *ngIf="mostrarModal()" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm px-4">
+    <div class="bg-black border-t-4 p-8 rounded-2xl shadow-2xl w-full max-w-sm text-center transform transition-all"
+        [ngClass]="esError() ? 'border-red-500' : 'border-green-400'">
         <p class="text-white text-lg mb-6">{{ mensajeModal() }}</p>
         <button (click)="cerrarModal()" 
-                class="w-full py-2 px-4 rounded-lg text-oscuro-fondo font-bold transition-colors"
-                [ngClass]="esError() ? 'bg-red-500 hover:bg-red-400' : 'bg-greenpoint hover:bg-greenpoint-light'">
+                class="w-full py-2 px-4 rounded-lg text-black font-bold transition-colors"
+                [ngClass]="esError() ? 'bg-red-500 hover:bg-red-400' : 'bg-green-500 hover:bg-green-400'">
         Entendido
         </button>
     </div>
