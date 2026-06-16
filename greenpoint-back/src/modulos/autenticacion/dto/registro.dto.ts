@@ -19,11 +19,6 @@ export class RegistroDto {
     @IsNotEmpty({ message: 'La contraseña es obligatoria' })
     contrasena!: string;
 
-
-    @IsString()
-    @IsNotEmpty({ message: 'La foto de perfil es obligatoria' })
-    fotoPerfil?: string; 
-
     @IsString()
     @IsNotEmpty({ message: 'La fecha de nacimiento es obligatoria' })
     fechaNacimiento!: string;
