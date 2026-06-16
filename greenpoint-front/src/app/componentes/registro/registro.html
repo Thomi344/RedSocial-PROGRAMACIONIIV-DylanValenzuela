@@ -8,20 +8,28 @@
         </h2>
         <p class="text-center text-gray-300 mb-5 text-xs md:text-sm">Creá tu perfil y empezá a conectar.</p>
 
-        <form [formGroup]="miFormulario" (ngSubmit)="enviarForm()">
+<form [formGroup]="miFormulario" (ngSubmit)="enviarForm()">
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             
             <div>
             <label class="text-[10px] text-gray-300 uppercase tracking-wide">Nombre</label>
             <input type="text" formControlName="nombre" class="w-full mt-1 bg-black/40 border-b-2 border-white/20 py-2 pl-3 rounded-t-md text-white text-sm focus:outline-none focus:border-green-400 transition-colors">
-            <span *ngIf="nombre?.touched && nombre?.invalid" class="text-red-400 text-xs mt-1 block font-semibold">Requerido.</span>
+            <div *ngIf="nombre?.touched && nombre?.invalid" class="text-red-400 text-xs mt-1 font-semibold">
+                <span *ngIf="nombre?.errors?.['required']" class="block">Requerido.</span>
+                <span *ngIf="nombre?.errors?.['pattern']" class="block">Solo letras, sin números.</span>
+                <span *ngIf="nombre?.errors?.['maxlength']" class="block">Máximo 18 caracteres.</span>
+            </div>
             </div>
 
             <div>
             <label class="text-[10px] text-gray-300 uppercase tracking-wide">Apellido</label>
             <input type="text" formControlName="apellido" class="w-full mt-1 bg-black/40 border-b-2 border-white/20 py-2 pl-3 rounded-t-md text-white text-sm focus:outline-none focus:border-green-400 transition-colors">
-            <span *ngIf="apellido?.touched && apellido?.invalid" class="text-red-400 text-xs mt-1 block font-semibold">Requerido.</span>
+            <div *ngIf="apellido?.touched && apellido?.invalid" class="text-red-400 text-xs mt-1 font-semibold">
+                <span *ngIf="apellido?.errors?.['required']" class="block">Requerido.</span>
+                <span *ngIf="apellido?.errors?.['pattern']" class="block">Solo letras, sin números.</span>
+                <span *ngIf="apellido?.errors?.['maxlength']" class="block">Máximo 18 caracteres.</span>
+            </div>
             </div>
 
             <div>
@@ -30,10 +38,14 @@
             <span *ngIf="nombreUsuario?.touched && nombreUsuario?.invalid" class="text-red-400 text-xs mt-1 block font-semibold">Requerido.</span>
             </div>
 
-            <div>
+        <div>
             <label class="text-[10px] text-gray-300 uppercase tracking-wide">Nacimiento</label>
-            <input type="date" formControlName="fechaNacimiento" class="w-full mt-1 bg-black/40 border-b-2 border-white/20 py-2 pl-3 rounded-t-md text-white text-sm focus:outline-none focus:border-green-400 transition-colors [color-scheme:dark]">
-            <span *ngIf="fechaNacimiento?.touched && fechaNacimiento?.invalid" class="text-red-400 text-xs mt-1 block font-semibold">Requerido.</span>
+            <input type="date" formControlName="fechaNacimiento" min="1930-01-01" class="w-full mt-1 bg-black/40 border-b-2 border-white/20 py-2 pl-3 rounded-t-md text-white text-sm focus:outline-none focus:border-green-400 transition-colors [color-scheme:dark]">
+            <div *ngIf="fechaNacimiento?.touched && fechaNacimiento?.invalid" class="text-red-400 text-xs mt-1 font-semibold">
+                <span *ngIf="fechaNacimiento?.errors?.['required']" class="block">Requerido.</span>
+                <span *ngIf="fechaNacimiento?.errors?.['fechaFutura']" class="block">La fecha debe estar en el pasado.</span>
+                <span *ngIf="fechaNacimiento?.errors?.['fechaMuyAntigua']" class="block">El año mínimo es 1930.</span>
+            </div>
             </div>
 
         </div>
@@ -47,6 +59,7 @@
         <div class="mb-4 relative">
             <label class="text-[10px] text-gray-300 uppercase tracking-wide">Descripción breve</label>
             <textarea formControlName="descripcion" rows="1" class="w-full mt-1 bg-black/40 border-b-2 border-white/20 py-2 pl-3 rounded-t-md text-white text-sm focus:outline-none focus:border-green-400 transition-colors resize-none" placeholder="Contanos algo sobre vos..."></textarea>
+            <span *ngIf="descripcion?.touched && descripcion?.errors?.['minlength']" class="text-red-400 text-xs mt-1 block font-semibold">Mínimo 10 caracteres.</span>
         </div>
 
         <div class="mb-4">
@@ -59,13 +72,17 @@
             <label class="text-[10px] text-gray-300 uppercase tracking-wide">Contraseña</label>
             <input type="password" formControlName="clave" class="w-full mt-1 bg-black/40 border-b-2 border-white/20 py-2 pl-3 rounded-t-md text-white text-sm focus:outline-none focus:border-green-400 transition-colors">
             <div *ngIf="clave?.touched && clave?.invalid" class="text-red-400 text-xs mt-1 font-semibold">
-                <span *ngIf="clave?.errors?.['pattern']">8 caracteres, 1 mayúscula y 1 número.</span>
+                <span *ngIf="clave?.errors?.['required']" class="block">Requerido.</span>
+                <span *ngIf="clave?.errors?.['pattern']" class="block">8 caracteres, 1 mayúscula y 1 número.</span>
             </div>
             </div>
 
             <div>
             <label class="text-[10px] text-gray-300 uppercase tracking-wide">Repetir contraseña</label>
             <input type="password" formControlName="repiteClave" class="w-full mt-1 bg-black/40 border-b-2 border-white/20 py-2 pl-3 rounded-t-md text-white text-sm focus:outline-none focus:border-green-400 transition-colors">
+            <div *ngIf="repiteClave?.dirty || repiteClave?.touched" class="mt-1 text-xs font-semibold">
+                <span *ngIf="miFormulario.hasError('clavesNoIguales')" class="text-red-400 block">Las contraseñas no coinciden.</span>
+            </div>
             </div>
         </div>
 

@@ -3,6 +3,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { confirmarClaveValidator } from '../../validators/clave.validator';
+import { fechaPasadaValidator } from '../../validators/fecha.validator';
 // --- Auth ---
 import { Auth } from '../../servicios/auth';
 import { firstValueFrom } from 'rxjs'; 
@@ -36,11 +37,11 @@ export class Registro implements OnInit {
   ngOnInit(): void {
     // --- Inicializacion del formulario con sus validaciones sincronicas ---
     this.miFormulario = new FormGroup({
-      nombre: new FormControl('', [Validators.required]),
-      apellido: new FormControl('', [Validators.required]),
+      nombre: new FormControl('', [Validators.required,Validators.maxLength(18), Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/)]),
+      apellido: new FormControl('', [Validators.required,Validators.maxLength(18), Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/)]),
       correo: new FormControl('', [Validators.required, Validators.email]),
       nombreUsuario: new FormControl('', [Validators.required]),
-      fechaNacimiento: new FormControl('', [Validators.required]),
+      fechaNacimiento: new FormControl('', [Validators.required, fechaPasadaValidator()]),
       descripcion: new FormControl('', [Validators.maxLength(250)]),
       clave: new FormControl('', [
         Validators.required, 
@@ -96,8 +97,8 @@ export class Registro implements OnInit {
       formData.append('nombreUsuario', this.miFormulario.value.nombreUsuario);
       formData.append('email', this.miFormulario.value.correo);
       formData.append('contrasena', this.miFormulario.value.clave);
-      
-      // Agrega el archivo
+      formData.append('fechaNacimiento', this.miFormulario.value.fechaNacimiento);
+      formData.append('descripcion', this.miFormulario.value.descripcion || '');
       formData.append('foto', this.fotoTemporal);
 
       console.log('Enviando FormData a NestJS...');
