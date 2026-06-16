@@ -9,25 +9,28 @@ import bcrypt from 'bcryptjs';
 
 @Injectable()
 export class AutenticacionService {
-    
-    constructor( 
-        @InjectModel(Usuario.name) private usuarioModel: Model<UsuarioDocument>,
-        private cloudinaryService: CloudinaryService 
-    ) {}
+
+    constructor( @InjectModel(Usuario.name) private usuarioModel: Model<UsuarioDocument>,private cloudinaryService: CloudinaryService ) {}
 
     // --- Registrar usuario ---
-    async registrar(registroDto: RegistroDto, file: Express.Multer.File){
+    async registrar(registroDto: RegistroDto, file?: Express.Multer.File){
         const { nombre, nombreUsuario, email, contrasena } = registroDto;
 
         // --- Validar si el email o nombre de usuario existen ---
         const usuarioExiste = await this.usuarioModel.findOne({$or: [{ email }, { nombreUsuario }]});
         if(usuarioExiste){
-            throw new BadRequestException('El correo electrónico o el nombre de usuario ya están registrados');
+            throw new BadRequestException('El correo electrónico  ya están registrados');
         }
         
+        let urlFotoPerfil: string = '';
         // --- SUBIR LA IMAGEN A CLOUDINARY ---
         // archivo en memoria al servicio de Cloudinary
-        const fotoSubida = await this.cloudinaryService.uploadImage(file);
+        if (file) {
+            const fotoSubida = await this.cloudinaryService.uploadImage(file);
+            urlFotoPerfil = fotoSubida.secure_url;
+        }else{
+            urlFotoPerfil = ""
+        }
 
         // --- Encriptar contraseña ---
         const salt = await bcrypt.genSalt(10);
@@ -40,7 +43,7 @@ export class AutenticacionService {
             email,
             contrasena: contrasenaEncriptada,
             // Guardam la URL segura que acaba de generar Cloudinary
-            fotoPerfil: fotoSubida.secure_url, 
+            fotoPerfil: urlFotoPerfil, 
         });
         
         await nuevoUsuario.save();

@@ -11,14 +11,16 @@ export class RegistroDto {
     nombreUsuario!: string;
     
     @IsEmail({}, { message: 'El formato del email no es válido' })
+    @IsNotEmpty({ message: 'El correo electrónico es obligatorio' })
     email!: string;
 
     @IsString()
     @MinLength(6, { message: 'La contraseña debe tener al menos 6 caracteres' })
+    @IsNotEmpty({ message: 'La contraseña es obligatoria' })
     contrasena!: string;
 
-    // --- Como la imagen se sube a Cloudinary desde el Front, el Back solo recibe la URL (un string) ---
-    @IsOptional()
+
     @IsString()
+    @IsNotEmpty({ message: 'La foto de perfil es obligatoria' })
     fotoPerfil?: string; 
 }

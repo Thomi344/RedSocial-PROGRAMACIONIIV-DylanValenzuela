@@ -88,7 +88,7 @@ export class Registro implements OnInit {
     this.cargando.set(true);
 
     try {
-      // --- FormData (caja fuerte para archivos y texto) ---
+      // --- FormData (caja para archivos y texto) ---
       const formData = new FormData();
       
       // campos de texto
@@ -105,7 +105,7 @@ export class Registro implements OnInit {
       // --- Manda TODO junto al backend ---
       const respuestaBackend = await firstValueFrom(this.authService.registrarUsuario(formData));
       
-      // --- 3. Si todo salió bien, limpiamos y mostramos el éxito ---
+      // --- Si todo salió bien, limpiamos y mostramos el éxito ---
       console.log('Respuesta del servidor:', respuestaBackend);
       this.miFormulario.reset();
       this.fotoTemporal = null;

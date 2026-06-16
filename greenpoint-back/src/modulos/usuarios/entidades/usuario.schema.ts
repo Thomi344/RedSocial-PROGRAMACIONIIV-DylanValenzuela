@@ -3,7 +3,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 // --- Esto permite que NestJS reconozca la clase como un documento de MongoDB ---
 export type UsuarioDocument = Usuario;
 
-@Schema({ timestamps: true }) // 'timestamps' agrega automaticamente las columnas 'createdAt' y 'updatedAt'
+@Schema({ timestamps: true }) // 'timestamps' agrega columnas 'createdAt' y 'updatedAt'
 export class Usuario {
     @Prop({ required: true, trim: true })
     nombre!: string;
@@ -16,7 +16,7 @@ export class Usuario {
     contrasena!: string;
 
     @Prop({ default: '' })
-    fotoPerfil!: string; // Aca va a impactar la URL de Cloudinary
+    fotoPerfil!: string; // URL de Cloudinary
 }
 
 // --- Gener el esquema oficial de Mongoose a partir de la clase de arriba ---

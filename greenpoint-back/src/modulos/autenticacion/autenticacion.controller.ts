@@ -22,7 +22,7 @@ export class AutenticacionController {
         cb(null, true);
         }
     }))
-    // --- Este endpoint espera un 'registroDto' con los datos del usuario y un archivo 'foto' con la imagen de perfil ---
+    // --- endpoint espera Dto  y un archivo 'foto' ---
     async registrarUsuario( @Body() registroDto: RegistroDto, @UploadedFile() file: Express.Multer.File ) {
         if (!file) {
         throw new BadRequestException('La foto de perfil es obligatoria');

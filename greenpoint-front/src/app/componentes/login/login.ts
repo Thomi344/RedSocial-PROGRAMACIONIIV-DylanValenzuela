@@ -16,7 +16,7 @@ export class Login implements OnInit {
   
   miFormulario!: FormGroup;
   
-  // --- SIGNALS PARA EL CONTROL VISUAL DE LA INTERFAZ ---
+  // --- SIGNALS ---
   mostrarModal = signal<boolean>(false);
   mensajeModal = signal<string>('');
   esError = signal<boolean>(false);
@@ -74,7 +74,7 @@ export class Login implements OnInit {
       this.abrirModal('¡Acceso concedido! Entrando a GreenPoint...', false);
 
     } catch (err: any) {
-      // Captura el error 401 del backend ("Credenciales inválidas")
+      // Captura error 401 del backend ("Credenciales inválidas")
       const mensajeError = err.error?.message || 'Error de conexión con el servidor.';
       
       console.error('Error en login:', err);
