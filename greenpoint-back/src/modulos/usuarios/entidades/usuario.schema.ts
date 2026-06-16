@@ -17,6 +17,18 @@ export class Usuario {
 
     @Prop({ default: '' })
     fotoPerfil!: string; // URL de Cloudinary
+
+    @Prop({required:true})
+    fechaNacimiento!: string;
+
+    @Prop({ default: '' })
+    descripcion!: string;
+    // --- Campos Administrativos  ---
+    @Prop({ default: true })
+    activo!: boolean; // Sirve para dar de baja sin borrar 
+
+    @Prop({ default: 'usuario', enum: ['usuario', 'admin'] })
+    rol!: string; 
 }
 
 // --- Gener el esquema oficial de Mongoose a partir de la clase de arriba ---

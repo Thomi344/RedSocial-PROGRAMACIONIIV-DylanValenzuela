@@ -14,7 +14,7 @@ export class AutenticacionService {
 
     // --- Registrar usuario ---
     async registrar(registroDto: RegistroDto, file?: Express.Multer.File){
-        const { nombre, nombreUsuario, email, contrasena } = registroDto;
+        const { nombre, nombreUsuario, email, contrasena , fechaNacimiento, descripcion } = registroDto;
 
         // --- Validar si el email o nombre de usuario existen ---
         const usuarioExiste = await this.usuarioModel.findOne({$or: [{ email }, { nombreUsuario }]});
@@ -42,8 +42,9 @@ export class AutenticacionService {
             nombreUsuario,
             email,
             contrasena: contrasenaEncriptada,
-            // Guardam la URL segura que acaba de generar Cloudinary
             fotoPerfil: urlFotoPerfil, 
+            fechaNacimiento,
+            descripcion
         });
         
         await nuevoUsuario.save();

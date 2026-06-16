@@ -8,4 +8,4 @@ export class LoginDto {
     @IsString()
     @IsNotEmpty({ message: 'La contraseña es obligatoria' })
     contrasena!: string;
-}
+    }

@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsString, MinLength,MaxLength } from 'class-validator';
 
 // --- DTO para el registro de usuarios, con validaciones ---
 export class RegistroDto {
@@ -23,4 +23,13 @@ export class RegistroDto {
     @IsString()
     @IsNotEmpty({ message: 'La foto de perfil es obligatoria' })
     fotoPerfil?: string; 
+
+    @IsString()
+    @IsNotEmpty({ message: 'La fecha de nacimiento es obligatoria' })
+    fechaNacimiento!: string;
+
+    @IsOptional()
+    @IsString()
+    @MaxLength(250, { message: 'La descripción es demasiado larga' })
+    descripcion?: string;    
 }
