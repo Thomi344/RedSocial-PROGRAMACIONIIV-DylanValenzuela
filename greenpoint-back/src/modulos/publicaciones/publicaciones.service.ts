@@ -114,4 +114,27 @@ export class PublicacionesService {
         
         return { mensaje: 'Comentario agregado', comentarios: publicacion.comentarios };
     }
+// --- 7. Eliminar Comentario (DELETE) ---
+    async eliminarComentario(idPublicacion: string, idComentario: string, usuarioId: string, perfilUsuario: string) {
+        const publicacion = await this.publicacionModel.findById(idPublicacion);
+        if (!publicacion) throw new NotFoundException('Publicación no encontrada');
+
+        // Buscamos el comentario dentro del array para validar autoría
+        const comentario = publicacion.comentarios.find(c => (c as any)._id.toString() === idComentario);
+        if (!comentario) throw new NotFoundException('Comentario no encontrado');
+
+        // Validación estricta: Solo el dueño del comentario o un administrador pueden borrarlo
+        if (comentario.usuario.toString() !== usuarioId && perfilUsuario !== 'administrador') {
+            throw new UnauthorizedException('No tenés permiso para eliminar este comentario');
+        }
+
+        // Removemos el comentario de manera atómica usando $pull de MongoDB
+        const publicacionActualizada = await this.publicacionModel.findByIdAndUpdate(
+            idPublicacion,
+            { $pull: { comentarios: { _id: idComentario } } },
+            { new: true }
+        ).populate('comentarios.usuario', 'nombre nombreUsuario fotoPerfil');
+        if (!publicacionActualizada) throw new NotFoundException('No se pudo actualizar la publicación');
+        return { mensaje: 'Comentario eliminado correctamente', comentarios: publicacionActualizada.comentarios };
+    }
 }

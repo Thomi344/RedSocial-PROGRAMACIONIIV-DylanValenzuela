@@ -2,12 +2,12 @@
     
     <div class="flex justify-between items-start mb-4">
         <div class="flex items-center gap-3">
-            <img [src]="publicacion.usuario.fotoPerfil || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'" 
+            <img [src]="publicacion.usuario?.fotoPerfil || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'" 
                  alt="Avatar" 
                  class="w-10 h-10 rounded-full object-cover border border-white/10">
             <div>
-                <p class="font-bold text-white text-sm">{{ publicacion.usuario.nombre || publicacion.usuario.nombreUsuario }}</p>
-                <p class="text-xs text-gray-500">@{{ publicacion.usuario.nombreUsuario }} • {{ publicacion.createdAt | date:'shortDate' }}</p>
+                <p class="font-bold text-white text-sm">{{ publicacion.usuario?.nombre || publicacion.usuario?.nombreUsuario }}</p>
+                <p class="text-xs text-gray-500">@{{ publicacion.usuario?.nombreUsuario }} • {{ publicacion.createdAt | date:'shortDate' }}</p>
             </div>
         </div>
 
@@ -28,45 +28,109 @@
         <img [src]="publicacion.imagen" alt="Imagen adjunta" class="w-full object-cover max-h-96">
     </div>
 
-    <div class="flex items-center pt-3 border-t border-white/5">
+    <div class="flex items-center gap-4 pt-3 border-t border-white/5">
         <button 
             (click)="toggleLike()" 
             [disabled]="!usuarioActual() || estaCargandoLike()"
             [ngClass]="{'text-green-500 bg-green-500/10': dioLike(), 'text-gray-400 hover:text-white hover:bg-white/5': !dioLike()}"
             class="flex items-center gap-2 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50 text-sm font-medium">
-            
             <svg *ngIf="dioLike()" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path></svg>
             <svg *ngIf="!dioLike()" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
-            
             {{ cantidadLikes() }} 
+        </button>
+
+        <button 
+            (click)="toggleComentarios()"
+            class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-sm font-medium">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+            {{ publicacion.comentarios?.length || 0 }}
         </button>
     </div>
 
+    <div *ngIf="mostrarComentarios()" class="mt-4 pt-4 border-t border-white/5">
+        
+        <div class="space-y-4 mb-4 max-h-60 overflow-y-auto custom-scrollbar pr-2">
+            <div *ngIf="!publicacion.comentarios || publicacion.comentarios.length === 0" class="text-center text-gray-500 text-sm py-4">
+                Sé el primero en dejar un comentario.
+            </div>
+            
+            <div *ngFor="let com of publicacion.comentarios" class="flex gap-3">
+                <img [src]="com.usuario?.fotoPerfil || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'" 
+                     alt="Avatar" class="w-8 h-8 rounded-full object-cover border border-white/10 mt-1">
+                
+                <div class="flex-1 bg-black/20 rounded-xl p-3 border border-white/5">
+                    <div class="flex justify-between items-start mb-1">
+                        <div class="flex flex-col">
+                            <span class="font-bold text-white text-xs">{{ com.usuario?.nombre || com.usuario?.nombreUsuario }}</span>
+                            <span class="text-[10px] text-gray-500">{{ com.fecha | date:'short' }}</span>
+                        </div>
+                        
+                        <button *ngIf="puedeEliminarComentario(com) || puedeEliminarComentario(com)"
+                                (click)="abrirModalComentario(com._id)"
+                                title="Eliminar comentario"
+                                class="text-gray-500 hover:text-red-500 p-1 rounded transition-colors cursor-pointer">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>
+                    </div>
+                    <p class="text-gray-300 text-sm whitespace-pre-line pr-4">{{ com.texto }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex gap-2 items-end" *ngIf="usuarioActual()">
+            <img [src]="usuarioActual()?.fotoPerfil || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'" 
+                 alt="Mi Avatar" class="w-8 h-8 rounded-full object-cover border border-white/10 mb-1">
+            
+            <div class="flex-1">
+                <textarea 
+                    [value]="nuevoComentario()"
+                    (input)="actualizarTextoComentario($event)"
+                    rows="1" 
+                    placeholder="Escribí un comentario..." 
+                    class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-green-500 transition-all resize-none text-sm min-h-[40px]">
+                </textarea>
+            </div>
+            
+            <button 
+                (click)="publicarComentario()" 
+                [disabled]="!nuevoComentario().trim() || enviandoComentario()"
+                class="bg-green-500 hover:bg-green-400 text-black p-2 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed mb-1 shadow-[0_0_10px_rgba(34,197,94,0.2)]">
+                <svg *ngIf="!enviandoComentario()" class="w-5 h-5 rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                <svg *ngIf="enviandoComentario()" class="animate-spin h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+            </button>
+        </div>
+    </div>
 </article>
 
 <div *ngIf="mostrarModalEliminar()" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm px-4">
     <div class="bg-zinc-900 border border-white/10 rounded-2xl w-full max-w-sm p-6 shadow-2xl transform transition-all">
-        
         <div class="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center mb-4 shadow-[0_0_15px_rgba(239,68,68,0.2)]">
             <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
         </div>
-        
         <h3 class="text-xl font-bold text-white mb-2">Eliminar publicación</h3>
-        <p class="text-gray-400 text-sm mb-6">¿Estás seguro que querés borrar este posteo? Esta acción es definitiva y no se puede deshacer.</p>
-        
+        <p class="text-gray-400 text-sm mb-6">¿Estás seguro que querés borrar este posteo? Esta acción es definitiva.</p>
         <div class="flex gap-3 w-full">
-            <button 
-                (click)="cerrarModal()" 
-                [disabled]="estaEliminando()"
-                class="flex-1 px-4 py-2 rounded-xl text-sm font-semibold text-white bg-zinc-800 hover:bg-zinc-700 transition-colors disabled:opacity-50">
-                Cancelar
-            </button>
-            <button 
-                (click)="confirmarEliminacion()" 
-                [disabled]="estaEliminando()"
-                class="flex-1 px-4 py-2 rounded-xl text-sm font-bold text-white bg-red-500 hover:bg-red-600 shadow-[0_0_15px_rgba(239,68,68,0.3)] transition-all flex justify-center items-center gap-2 disabled:opacity-50">
+            <button (click)="cerrarModal()" [disabled]="estaEliminando()" class="flex-1 px-4 py-2 rounded-xl text-sm font-semibold text-white bg-zinc-800 hover:bg-zinc-700 transition-colors disabled:opacity-50">Cancelar</button>
+            <button (click)="confirmarEliminacion()" [disabled]="estaEliminando()" class="flex-1 px-4 py-2 rounded-xl text-sm font-bold text-white bg-red-500 hover:bg-red-600 shadow-[0_0_15px_rgba(239,68,68,0.3)] transition-all flex justify-center items-center gap-2 disabled:opacity-50">
                 <svg *ngIf="estaEliminando()" class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                <span *ngIf="!estaEliminando()">Eliminar</span>
+                <span>Eliminar</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="mostrarModalEliminarComentario()" class="fixed inset-0 z-[105] flex items-center justify-center bg-black/80 backdrop-blur-sm px-4">
+    <div class="bg-zinc-900 border border-white/10 rounded-2xl w-full max-w-sm p-6 shadow-2xl transform transition-all">
+        <div class="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center mb-4 shadow-[0_0_15px_rgba(239,68,68,0.2)]">
+            <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-2">Eliminar comentario</h3>
+        <p class="text-gray-400 text-sm mb-6">¿Estás seguro que querés borrar este comentario? Esta acción no se puede deshacer.</p>
+        <div class="flex gap-3 w-full">
+            <button (click)="cerrarModalComentario()" [disabled]="estaEliminandoComentario()" class="flex-1 px-4 py-2 rounded-xl text-sm font-semibold text-white bg-zinc-800 hover:bg-zinc-700 transition-colors disabled:opacity-50">Cancelar</button>
+            <button (click)="confirmarEliminarComentario()" [disabled]="estaEliminandoComentario()" class="flex-1 px-4 py-2 rounded-xl text-sm font-bold text-white bg-red-500 hover:bg-red-600 shadow-[0_0_15px_rgba(239,68,68,0.3)] transition-all flex justify-center items-center gap-2 disabled:opacity-50">
+                <svg *ngIf="estaEliminandoComentario()" class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                <span>Eliminar</span>
             </button>
         </div>
     </div>
@@ -74,18 +138,11 @@
 
 <div *ngIf="mostrarModalError()" class="fixed inset-0 z-[110] flex items-center justify-center bg-black/80 backdrop-blur-sm px-4">
     <div class="bg-zinc-900 border border-white/10 rounded-2xl w-full max-w-sm p-6 shadow-2xl transform transition-all text-center">
-        
         <div class="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-4 shadow-[0_0_15px_rgba(239,68,68,0.2)]">
             <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
         </div>
-        
         <h3 class="text-xl font-bold text-white mb-2">¡Ups! Algo salió mal</h3>
         <p class="text-gray-400 text-sm mb-6">{{ mensajeError() }}</p>
-        
-        <button 
-            (click)="cerrarModalError()"
-            class="w-full px-4 py-2.5 rounded-xl text-sm font-bold text-white bg-zinc-800 hover:bg-zinc-700 transition-colors shadow-md">
-            Entendido
-        </button>
+        <button (click)="cerrarModalError()" class="w-full px-4 py-2.5 rounded-xl text-sm font-bold text-white bg-zinc-800 hover:bg-zinc-700 transition-colors shadow-md">Entendido</button>
     </div>
 </div>

@@ -81,6 +81,16 @@ export class PublicacionesController {
         const usuario = this.obtenerUsuarioDelToken(request);
         return this.publicacionesService.agregarComentario(id, usuario.sub, texto);
     }
+    // --- 7. Eliminar Comentario (DELETE) ---
+    @Delete(':id/comentarios/:idComentario')
+    async eliminarComentario(
+        @Param('id') id: string,
+        @Param('idComentario') idComentario: string,
+        @Req() request: any
+    ) {
+        const usuario = this.obtenerUsuarioDelToken(request);
+        return this.publicacionesService.eliminarComentario(id, idComentario, usuario.sub, usuario.perfil);
+    }
 }
 
 

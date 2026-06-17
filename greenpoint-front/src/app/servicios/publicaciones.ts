@@ -54,4 +54,12 @@ export class Publicaciones {
   quitarMeGusta(idPublicacion: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${idPublicacion}/like`, { headers: this.getHeaders() });
   }
+  // --- Agregar Comentario (POST) ---
+  agregarComentario(idPublicacion: string, texto: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${idPublicacion}/comentarios`, { texto }, { headers: this.getHeaders() });
+  }
+  // --- Eliminar Comentario (DELETE) ---
+  eliminarComentario(idPublicacion: string, idComentario: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${idPublicacion}/comentarios/${idComentario}`, { headers: this.getHeaders() });
+  }
 }

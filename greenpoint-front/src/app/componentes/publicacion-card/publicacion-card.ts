@@ -21,12 +21,20 @@ export class PublicacionCard implements OnInit {
   dioLike = signal<boolean>(false);
   cantidadLikes = signal<number>(0);
   estaCargandoLike = signal<boolean>(false);
-  
+  // --- Estados de Comentarios ---
+  mostrarComentarios = signal<boolean>(false);
+  nuevoComentario = signal<string>('');
+  enviandoComentario = signal<boolean>(false);
   // --- Estado del Modal ---
   mostrarModalEliminar = signal<boolean>(false);
   estaEliminando = signal<boolean>(false);
   mostrarModalError = signal<boolean>(false);
   mensajeError = signal<string>('');
+  // Modales específicos para comentarios
+  mostrarModalEliminarComentario = signal<boolean>(false);
+  estaEliminandoComentario = signal<boolean>(false);
+  comentarioAEliminarId = signal<string>('');
+
 
   ngOnInit() {
     this.cantidadLikes.set(this.publicacion.likes?.length || 0);
@@ -66,7 +74,72 @@ export class PublicacionCard implements OnInit {
       this.estaCargandoLike.set(false);
     }
   }
+  // --- Lógica de Comentarios ---
+  toggleComentarios() {
+    this.mostrarComentarios.update(v => !v);
+  }
 
+  actualizarTextoComentario(evento: any) {
+    this.nuevoComentario.set(evento.target.value);
+  }
+
+  async publicarComentario() {
+    const texto = this.nuevoComentario().trim();
+    if (!texto || this.enviandoComentario()) return;
+
+    this.enviandoComentario.set(true);
+    try {
+      const res = await firstValueFrom(this.publicacionesService.agregarComentario(this.publicacion._id, texto));
+      // Actualizamos la lista de comentarios localmente con lo que devuelve el back
+      this.publicacion.comentarios = res.comentarios;
+      this.nuevoComentario.set(''); // Limpiamos el input
+    } catch (error) {
+      console.error('Error al comentar', error);
+      this.mensajeError.set('Hubo un problema al publicar tu comentario.');
+      this.mostrarModalError.set(true);
+    } finally {
+      this.enviandoComentario.set(false);
+    }
+  }
+  // --- Modal: Eliminar Comentario ---
+  abrirModalComentario(idComentario: string) {
+    this.comentarioAEliminarId.set(idComentario);
+    this.mostrarModalEliminarComentario.set(true);
+  }
+
+  cerrarModalComentario() {
+    if (!this.estaEliminandoComentario()) {
+      this.mostrarModalEliminarComentario.set(false);
+      this.comentarioAEliminarId.set('');
+    }
+  }
+
+  async confirmarEliminarComentario() {
+    const idComentario = this.comentarioAEliminarId();
+    if (!idComentario || this.estaEliminandoComentario()) return;
+
+    this.estaEliminandoComentario.set(true);
+    try {
+      const res = await firstValueFrom(this.publicacionesService.eliminarComentario(this.publicacion._id, idComentario));
+      this.publicacion.comentarios = res.comentarios;
+      this.estaEliminandoComentario.set(false);
+      this.cerrarModalComentario();
+    } catch (error) {
+      console.error('Error al eliminar comentario', error);
+      this.cerrarModalComentario();
+      this.mensajeError.set('No pudimos eliminar el comentario. Intentá de nuevo.');
+      this.mostrarModalError.set(true);
+    } finally {
+      this.estaEliminandoComentario.set(false);
+    }
+  }
+
+  puedeEliminarComentario(comentario: any): boolean {
+    const user = this.usuarioActual();
+    if (!user || !comentario.usuario) return false;
+    // Es dueño del comentario o es administrador
+    return comentario.usuario._id === user.id || user.perfil === 'administrador';
+  }
   abrirModal() { this.mostrarModalEliminar.set(true); }
   
   cerrarModal() {
@@ -80,6 +153,7 @@ export class PublicacionCard implements OnInit {
     try {
       await firstValueFrom(this.publicacionesService.eliminarPublicacion(this.publicacion._id));
       this.publicacion.activa = false; 
+      this.estaEliminando.set(false);
       this.cerrarModal();
     } catch (error) {
       console.error('Error al eliminar', error);
