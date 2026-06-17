@@ -84,7 +84,7 @@ export class AutenticacionService {
             throw new UnauthorizedException('Credenciales inválidas');
         }
         // --- Generar token JWT ---
-        const payload = { sub: usuario._id, nombreUsuario: usuario.nombreUsuario ,rol: usuario.rol || 'usuario'};
+        const payload = { sub: usuario._id.toString(), nombreUsuario: usuario.nombreUsuario ,rol: usuario.rol || 'usuario'};
         const tokenGenerado = this.jwtService.sign(payload);
         // --- Retornar datos del usuario logeado (sin la contraseña) ---
         return {
@@ -96,6 +96,7 @@ export class AutenticacionService {
                 nombre: usuario.nombre,
                 email: usuario.email,
                 fotoPerfil: usuario.fotoPerfil,
+                perfil: usuario.rol || 'usuario'
             },
             
         };

@@ -6,7 +6,7 @@ import { PublicacionCard } from '../publicacion-card/publicacion-card';
 @Component({
   selector: 'app-publicaciones',
   standalone: true,
-  imports: [CommonModule, PublicacionCard],
+  imports: [CommonModule, PublicacionCard,],
   templateUrl: './publicaciones.html',
   styleUrl: './publicaciones.css',
 })
