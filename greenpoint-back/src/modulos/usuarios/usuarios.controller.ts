@@ -1,4 +1,4 @@
-import { Controller, Get, Put, Body, Req, UseInterceptors, UploadedFile, BadRequestException,UnauthorizedException } from '@nestjs/common';
+import { Controller, Get,Param, Put, Body, Req, UseInterceptors, UploadedFile, BadRequestException,UnauthorizedException } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UsuariosService } from './usuarios.service';
 import {CloudinaryService } from '../cloudinary/cloudinary.service';
@@ -59,5 +59,10 @@ export class UsuariosController {
             fotoUrl
         );
         
+    }
+    // --- 3. Obtener perfil de otro usuario (GET /usuarios/:id) ---
+    @Get(':id')
+    async obtenerPerfilDeOtro(@Param('id') id: string) {
+        return this.usuariosService.obtenerPerfil(id);
     }
 }

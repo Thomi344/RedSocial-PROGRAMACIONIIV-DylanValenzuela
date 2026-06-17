@@ -23,6 +23,11 @@ export const routes: Routes = [
         loadComponent: () => import('./componentes/registro/registro').then(m => m.Registro)
     },
     {
+        path:'perfil/:id',
+        loadComponent: () => import('./componentes/perfil-usuario/perfil-usuario').then(m => m.PerfilUsuario)
+    },
+
+    {
         path:'**',
         redirectTo: 'login'
     }

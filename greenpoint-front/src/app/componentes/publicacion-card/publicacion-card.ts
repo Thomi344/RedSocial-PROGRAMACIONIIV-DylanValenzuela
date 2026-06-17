@@ -3,10 +3,10 @@ import { CommonModule } from '@angular/common';
 import { Auth } from '../../servicios/auth';
 import { Publicaciones } from '../../servicios/publicaciones';
 import { firstValueFrom } from 'rxjs';
-
+import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-publicacion-card',
-  imports: [CommonModule],
+  imports: [CommonModule,RouterLink],
   templateUrl: './publicacion-card.html',
   styleUrl: './publicacion-card.css',
 })

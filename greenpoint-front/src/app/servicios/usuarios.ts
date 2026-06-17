@@ -31,5 +31,10 @@ export class Usuarios {
     });
     return this.http.put(`${this.apiUrl}/actualizar`, datos, { headers });
   }
+
+  // --- 3. Traer datos de otro usuario ---
+  obtenerUsuario(id: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
+  }
 }
 
