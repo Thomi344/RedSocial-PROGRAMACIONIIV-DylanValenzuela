@@ -68,6 +68,19 @@ export class PublicacionesController {
         const usuario = this.obtenerUsuarioDelToken(request);
         return this.publicacionesService.sacarMeGusta(id, usuario.sub);
     }
+    // --- 6. Agregar Comentario (POST) ---
+    @Post(':id/comentarios')
+    async agregarComentario(
+        @Param('id') id: string, 
+        @Body('texto') texto: string, 
+        @Req() request: any
+    ) {
+        if (!texto || texto.trim() === '') {
+            throw new UnauthorizedException('El comentario no puede estar vacío');
+        }
+        const usuario = this.obtenerUsuarioDelToken(request);
+        return this.publicacionesService.agregarComentario(id, usuario.sub, texto);
+    }
 }
 
 

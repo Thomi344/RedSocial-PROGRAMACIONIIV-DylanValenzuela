@@ -42,6 +42,7 @@ export class PublicacionesService {
         let publicaciones = await this.publicacionModel
             .find(filtro)
             .populate('usuario', 'nombre nombreUsuario fotoPerfil')
+            .populate('comentarios.usuario', 'nombre nombreUsuario fotoPerfil')
             .sort({ createdAt: -1 }) // Orden por defecto: Fecha (Más nuevas primero)
             .skip(offset)
             .limit(limit)
@@ -99,5 +100,18 @@ export class PublicacionesService {
         if (!publicacion) throw new NotFoundException('Publicación no encontrada');
         
         return { mensaje: 'Me gusta quitado', totalLikes: publicacion.likes.length };
+    }
+    // --- 6. Agregar Comentario (POST) ---
+    async agregarComentario(idPublicacion: string, usuarioId: string, texto: string) {
+        const publicacion = await this.publicacionModel.findByIdAndUpdate(
+            idPublicacion,
+            // $push agrega el nuevo comentario al final del array
+            { $push: { comentarios: { usuario: usuarioId, texto: texto, fecha: new Date() } } },
+            { new: true }
+        ).populate('comentarios.usuario', 'nombre nombreUsuario fotoPerfil'); // Devolvemos la lista actualizada
+
+        if (!publicacion) throw new NotFoundException('Publicación no encontrada');
+        
+        return { mensaje: 'Comentario agregado', comentarios: publicacion.comentarios };
     }
 }

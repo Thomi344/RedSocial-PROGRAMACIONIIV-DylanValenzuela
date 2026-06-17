@@ -24,7 +24,16 @@ export class Publicacion{
     // --- Para los "likes", almacenaun array de IDs de usuarios que han dado like a la publicación ---
     @Prop({ type: [{ type: Types.ObjectId, ref: 'Usuario' }], default: [] })
     likes!: Types.ObjectId[];
-
+    @Prop({
+        type: [{
+        usuario: { type: Types.ObjectId, ref: 'Usuario' },
+        texto: { type: String, required: true },
+        fecha: { type: Date, default: Date.now }
+        }],
+        default: []
+    })
+    comentarios!: { usuario: Types.ObjectId, texto: string, fecha: Date }[];
+    
     @Prop({ default: true })
     activa!: boolean;
 }
