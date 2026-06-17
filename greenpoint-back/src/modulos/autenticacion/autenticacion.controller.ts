@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UploadedFile, UseInterceptors, BadRequestException } from '@nestjs/common';
+import { Controller, Post, Body, UploadedFile, UseInterceptors, BadRequestException ,ParseFilePipe,MaxFileSizeValidator} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AutenticacionService } from './autenticacion.service';
 import { RegistroDto } from './dto/registro.dto';
@@ -13,7 +13,6 @@ export class AutenticacionController {
     @Post('registro')
     // --- interceptor de archivos para manejar la subida de la foto de perfil ---
     @UseInterceptors(FileInterceptor('foto', {
-        limits: { fileSize: 4 * 1024 * 1024 }, // Límite exacto de 4MB
         fileFilter: (req, file, cb) => {
         // Valida que el archivo sea sí o sí una imagen
         if (!file.mimetype.match(/\/(jpg|jpeg|png|webp)$/)) {
@@ -23,11 +22,27 @@ export class AutenticacionController {
         }
     }))
     // --- endpoint espera Dto  y un archivo 'foto' ---
-    async registrarUsuario( @Body() registroDto: RegistroDto, @UploadedFile() file: Express.Multer.File ) {
-        if (!file) {
-        throw new BadRequestException('La foto de perfil es obligatoria');
-        }
-        
+async registrarUsuario( 
+        @Body() registroDto: RegistroDto, 
+        @UploadedFile(
+            new ParseFilePipe({
+                validators: [
+                    new MaxFileSizeValidator({
+                        maxSize: 4 * 1024 * 1024,
+                        message: 'La foto es muy pesada. El límite máximo es de 4MB.'
+                    })
+                ],
+                fileIsRequired: true,
+                exceptionFactory(error) {
+                    // Si no sube archivo, tira  error personalizado
+                    if (error.includes('required')) {
+                        throw new BadRequestException('La foto de perfil es obligatoria');
+                    }
+                    throw new BadRequestException(error);
+                },
+            })
+        ) file: Express.Multer.File 
+    ) {
         // --- Llamamos al servicio de autenticación para registrar el usuario, pasándole el DTO y el archivo ---
         return this.autenticacionService.registrar(registroDto, file);
     }

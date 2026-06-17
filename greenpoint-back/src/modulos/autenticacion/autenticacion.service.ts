@@ -17,11 +17,17 @@ export class AutenticacionService {
         const { nombre, nombreUsuario, email, contrasena , fechaNacimiento, descripcion } = registroDto;
 
         // --- Validar si el email o nombre de usuario existen ---
-        const usuarioExiste = await this.usuarioModel.findOne({$or: [{ email }, { nombreUsuario }]});
-        if(usuarioExiste){
-            throw new BadRequestException('El correo electrónico  ya están registrados');
+        // --- Validar si el email ya existe ---
+        const emailExiste = await this.usuarioModel.findOne({ email });
+        if(emailExiste){
+            throw new BadRequestException('Ese correo electrónico ya tiene una cuenta asociada. Si es tuyo, probá iniciando sesión.');
         }
-        
+
+        // --- Validar si el nombre de usuario ya existe ---
+        const usuarioExiste = await this.usuarioModel.findOne({ nombreUsuario });
+        if(usuarioExiste){
+            throw new BadRequestException('Ese nombre de usuario ya está en uso. Por favor, elegí otro diferente.');
+        }
         let urlFotoPerfil: string = '';
         // --- SUBIR LA IMAGEN A CLOUDINARY ---
         // archivo en memoria al servicio de Cloudinary
