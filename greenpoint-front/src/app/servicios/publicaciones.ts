@@ -1,0 +1,57 @@
+import { Injectable, inject } from '@angular/core';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
+@Injectable({
+  providedIn: 'root',
+})
+export class Publicaciones {
+  private http = inject(HttpClient);
+  // --- URL base del backend para publicaciones ---
+  private apiUrl = 'https://greenpoint-back.onrender.com/publicaciones';
+
+  // --- Arma las cabeceras con el token de seguridad ---
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('token_greenpoint');
+    return new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+  }
+
+  // --- Obtener Publicaciones (GET) ---
+  // Transformamos la "página" en "offset" para el backend
+  obtenerPublicaciones(orden: string = 'fecha', pagina: number = 1, limite: number = 10, usuarioId?: string): Observable<any> {
+    const offset = (pagina - 1) * limite;
+    
+    let params = new HttpParams()
+      .set('orden', orden)
+      .set('offset', offset.toString())
+      .set('limit', limite.toString());
+
+    if (usuarioId) {
+      params = params.set('usuarioId', usuarioId);
+    }
+
+    // Este endpoint es público, no requiere token
+    return this.http.get(this.apiUrl, { params });
+  }
+  // --- Crear Publicación (POST) ---
+  // Recibe un FormData porque puede incluir un archivo de imagen
+  crearPublicacion(datosFormulario: FormData): Observable<any> {
+    return this.http.post(this.apiUrl, datosFormulario, { headers: this.getHeaders() });
+  }
+
+  // --- Eliminar Publicación (DELETE) ---
+  eliminarPublicacion(idPublicacion: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${idPublicacion}`, { headers: this.getHeaders() });
+  }
+
+  // --- Dar Me Gusta (POST) ---
+  darMeGusta(idPublicacion: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${idPublicacion}/like`, {}, { headers: this.getHeaders() });
+  }
+
+  // --- Quitar Me Gusta (DELETE) ---
+  quitarMeGusta(idPublicacion: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${idPublicacion}/like`, { headers: this.getHeaders() });
+  }
+}
