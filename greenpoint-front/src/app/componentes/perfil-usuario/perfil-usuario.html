@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-[#09090b] text-white font-sans w-full absolute top-0 left-0 pt-20 pb-12">
+<div class="min-h-screen bg-[#09090b] text-white font-sans w-full absolute top-10 left-0 pt-20 pb-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 animate-fade-in">
         
         <div *ngIf="cargando()" class="flex justify-center items-center py-32">
@@ -13,8 +13,8 @@
 
                     <div class="relative z-10 flex flex-col items-center text-center">
                         <img [src]="usuario().fotoPerfil || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'" 
-                             alt="Foto de perfil" 
-                             class="w-48 h-48 rounded-full object-cover border-4 border-[#121212] shadow-[0_0_30px_rgba(34,197,94,0.2)] mb-6">
+                            alt="Foto de perfil" 
+                            class="w-48 h-48 rounded-full object-cover border-4 border-[#121212] shadow-[0_0_30px_rgba(34,197,94,0.2)] mb-6">
                         
                         <h1 class="text-4xl font-black text-white mb-2 tracking-tight">{{ usuario().nombre }}</h1>
                         <p class="text-green-400 text-lg font-medium mb-6">@{{ usuario().nombreUsuario }}</p>
@@ -51,7 +51,7 @@
                     <h3 class="text-xl font-black text-white mb-2">Aún no hay publicaciones</h3>
                 </div>
 
-                <div class="space-y-6">
+                <div class="flex flex-col gap-6">
                     <app-publicacion-card *ngFor="let post of susPublicaciones()" [publicacion]="post"></app-publicacion-card>
                 </div>
             </div>

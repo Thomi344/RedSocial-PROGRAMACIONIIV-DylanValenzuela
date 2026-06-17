@@ -7,7 +7,7 @@
                 class="w-10 h-10 rounded-full object-cover border border-white/10">
             <div>
                 <p class="font-bold text-white text-sm">{{ publicacion.usuario?.nombre || publicacion.usuario?.nombreUsuario }}</p>
-                <p class="text-xs text-gray-500">@{{ publicacion.usuario?.nombreUsuario }} • {{ publicacion.createdAt | date:'shortDate' }}</p>
+                <p class="text-xs text-gray-500">@{{ publicacion.usuario?.nombreUsuario }} • {{ publicacion.createdAt | date:'dd/MM/yy' }}</p>
             </div>
         </div>
 
