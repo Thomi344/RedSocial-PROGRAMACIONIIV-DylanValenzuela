@@ -6,11 +6,12 @@ import {RegistroDto} from './dto/registro.dto';
 import {LoginDto} from './dto/login.dto';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import bcrypt from 'bcryptjs';
+import {JwtService} from '@nestjs/jwt';
 
 @Injectable()
 export class AutenticacionService {
 
-    constructor( @InjectModel(Usuario.name) private usuarioModel: Model<UsuarioDocument>,private cloudinaryService: CloudinaryService ) {}
+    constructor( @InjectModel(Usuario.name) private usuarioModel: Model<UsuarioDocument>,private cloudinaryService: CloudinaryService, private jwtService: JwtService ) {}
 
     // --- Registrar usuario ---
     async registrar(registroDto: RegistroDto, file?: Express.Multer.File){
@@ -82,10 +83,13 @@ export class AutenticacionService {
         if(!esContrasenaValida){
             throw new UnauthorizedException('Credenciales inválidas');
         }
-
+        // --- Generar token JWT ---
+        const payload = { sub: usuario._id, nombreUsuario: usuario.nombreUsuario ,rol: usuario.rol || 'usuario'};
+        const tokenGenerado = this.jwtService.sign(payload);
         // --- Retornar datos del usuario logeado (sin la contraseña) ---
         return {
             mensaje: 'Inicio de sesión exitoso',
+            token: tokenGenerado,
             usuario: {
                 id: usuario._id,
                 nombreUsuario: usuario.nombreUsuario,
@@ -93,6 +97,7 @@ export class AutenticacionService {
                 email: usuario.email,
                 fotoPerfil: usuario.fotoPerfil,
             },
+            
         };
     }
 }
