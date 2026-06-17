@@ -1,1 +1,102 @@
-<p>mi-perfil works!</p>
+<div class="min-h-screen bg-[#09090b] text-white font-sans w-full absolute top-10 left-0 pt-20 pb-12">
+    
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 animate-fade-in">
+        
+        <div *ngIf="cargando()" class="flex justify-center items-center py-32">
+            <svg class="animate-spin h-12 w-12 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+        </div>
+
+        <div *ngIf="!cargando() && usuario()" class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+            
+            <div class="lg:col-span-5 xl:col-span-4 lg:sticky lg:top-28">
+                <div class="bg-[#121212] border border-white/5 rounded-[2.5rem] p-10 shadow-2xl relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-green-600/20 to-transparent opacity-60"></div>
+
+                    <div *ngIf="!editando()" class="relative z-10 flex flex-col items-center text-center">
+                        <img [src]="usuario().fotoPerfil || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'" 
+                             alt="Foto de perfil" 
+                             class="w-48 h-48 rounded-full object-cover border-4 border-[#121212] shadow-[0_0_30px_rgba(34,197,94,0.2)] mb-6">
+                        
+                        <h1 class="text-4xl font-black text-white mb-2 tracking-tight">{{ usuario().nombre }}</h1>
+                        <p class="text-green-400 text-lg font-medium mb-6">@{{ usuario().nombreUsuario }}</p>
+                        
+                        <p class="text-gray-400 text-base mb-8 whitespace-pre-line min-h-[4rem] flex items-center justify-center leading-relaxed">
+                            {{ usuario().descripcion || 'Sin descripción. ¡Contale al mundo sobre vos!' }}
+                        </p>
+                        
+                        <button (click)="toggleEdicion()" class="w-full py-3.5 rounded-2xl bg-white/5 hover:bg-white/10 text-white font-bold border border-white/10 transition-colors text-sm mb-8">
+                            Editar Perfil
+                        </button>
+
+                        <div class="flex justify-between w-full border-t border-white/5 pt-6">
+                            <div class="text-center flex-1">
+                                <span class="block text-3xl font-black text-white mb-1">{{ misPublicaciones()?.length || 0 }}</span>
+                                <span class="text-[11px] text-gray-500 uppercase tracking-widest font-bold">Posteos</span>
+                            </div>
+                            <div class="w-px bg-white/5"></div>
+                            <div class="text-center flex-1">
+                                <span class="block text-3xl font-black text-white mb-1">{{ usuario().createdAt | date:'y' }}</span>
+                                <span class="text-[11px] text-gray-500 uppercase tracking-widest font-bold">Se unió</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div *ngIf="editando()" class="relative z-10 animate-fade-in" [formGroup]="perfilForm">
+                        <h2 class="text-2xl font-black text-white mb-6 text-center">Editar Perfil</h2>
+                        
+                        <div class="flex justify-center mb-8">
+                            <div class="relative group cursor-pointer">
+                                <img [src]="previewImagen() || usuario().fotoPerfil || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'" 
+                                     class="w-40 h-40 rounded-full object-cover border-4 border-[#121212] shadow-lg group-hover:opacity-30 transition-opacity">
+                                <div class="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                                    <svg class="w-8 h-8 text-white mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path></svg>
+                                    <span class="text-xs font-bold">Cambiar Foto</span>
+                                </div>
+                                <input type="file" (change)="alSeleccionarArchivo($event)" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                            </div>
+                        </div>
+
+                        <div class="space-y-5">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-400 mb-2 uppercase tracking-wide">Nombre Público</label>
+                                <input formControlName="nombre" type="text" class="w-full bg-black/50 border border-white/5 rounded-xl px-4 py-3.5 text-base text-white focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-400 mb-2 uppercase tracking-wide">Descripción</label>
+                                <textarea formControlName="descripcion" rows="4" class="w-full bg-black/50 border border-white/5 rounded-xl px-4 py-3.5 text-base text-white resize-none focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all" placeholder="Contá algo sobre vos..."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col gap-3 mt-8">
+                            <button (click)="guardarCambios()" [disabled]="perfilForm.invalid || guardando()" class="w-full py-3.5 rounded-xl text-sm font-black text-black bg-green-500 hover:bg-green-400 transition-all flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_15px_rgba(34,197,94,0.3)]">
+                                <svg *ngIf="guardando()" class="animate-spin h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                <span>{{ guardando() ? 'Guardando...' : 'Guardar Cambios' }}</span>
+                            </button>
+                            <button (click)="cancelarEdicion()" [disabled]="guardando()" class="w-full py-3.5 rounded-xl text-sm font-bold text-gray-300 bg-white/5 hover:bg-white/10 transition-colors disabled:opacity-50">Cancelar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-7 xl:col-span-8">
+                <div class="flex items-center justify-between mb-8 border-b border-white/5 pb-4">
+                    <h2 class="text-2xl font-black text-white tracking-tight">Tus Posteos</h2>
+                    <span class="text-sm font-bold text-green-400 bg-green-500/10 px-4 py-1.5 rounded-full">{{ misPublicaciones()?.length || 0 }} Publicaciones</span>
+                </div>
+                
+                <div *ngIf="!misPublicaciones() || misPublicaciones().length === 0" class="text-center py-20 bg-[#121212] border border-white/5 rounded-3xl">
+                    <div class="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-10 h-10 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-black text-white mb-2">Aún no publicaste nada</h3>
+                    <p class="text-gray-400 text-base">Tus publicaciones aparecerán acá para que las revises cuando quieras.</p>
+                </div>
+
+                <div class="space-y-6">
+                    <app-publicacion-card *ngFor="let post of misPublicaciones()" [publicacion]="post"></app-publicacion-card>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

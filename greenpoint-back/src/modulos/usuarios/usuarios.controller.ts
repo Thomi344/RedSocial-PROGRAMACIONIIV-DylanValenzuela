@@ -51,12 +51,13 @@ export class UsuariosController {
             fotoUrl = subida.url;
         } catch (error) {
             throw new BadRequestException('Error al subir la imagen de perfil a la nube');
-        }
+        }}
+        
         return this.usuariosService.actualizarPerfil(
             usuarioLogueado.sub || usuarioLogueado.id, 
             datosPerfil, 
             fotoUrl
         );
-        }
+        
     }
 }
