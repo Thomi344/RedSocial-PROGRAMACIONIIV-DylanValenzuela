@@ -5,6 +5,7 @@ import { PublicacionesController } from './publicaciones.controller';
 import { Publicacion, PublicacionSchema } from './entidades/publicacion.schema';
 import { CloudinaryModule } from '../cloudinary/cloudinary.module';
 import { JwtModule } from '@nestjs/jwt';
+import { ComentariosController } from './comentarios.controller';
 @Module({
   imports: [
     MongooseModule.forFeature([
@@ -14,7 +15,7 @@ import { JwtModule } from '@nestjs/jwt';
     })
 
   ],
-  controllers: [PublicacionesController],
+  controllers: [PublicacionesController,ComentariosController],
   providers: [PublicacionesService],
 })
 export class PublicacionesModule {}

@@ -28,11 +28,12 @@ export class Publicacion{
         type: [{
         usuario: { type: Types.ObjectId, ref: 'Usuario' },
         texto: { type: String, required: true },
-        fecha: { type: Date, default: Date.now }
+        fecha: { type: Date, default: Date.now },
+        modificado: { type: Boolean, default: false }
         }],
         default: []
     })
-    comentarios!: { usuario: Types.ObjectId, texto: string, fecha: Date }[];
+    comentarios!: { usuario: Types.ObjectId, texto: string, fecha: Date,modificado?: boolean }[];
     
     @Prop({ default: true })
     activa!: boolean;

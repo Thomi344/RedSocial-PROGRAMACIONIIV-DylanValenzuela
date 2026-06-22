@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException,BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Publicacion, PublicacionDocument } from './entidades/publicacion.schema';
@@ -29,6 +29,7 @@ export class PublicacionesService {
     }
 
     // --- 2. Listar Publicaciones (GET) ---
+    // --- orden: 'fecha' o 'likes', offset y limit para paginación, usuarioId para filtrar por "Mi Perfil" ---
     async listarPublicaciones(orden: string = 'fecha', offset: number = 0, limit: number = 10, usuarioIdFiltro?: string) {
         // --- Filtro base: solo publicaciones activas ---
         const filtro: any = { activa: true };
@@ -136,5 +137,53 @@ export class PublicacionesService {
         ).populate('comentarios.usuario', 'nombre nombreUsuario fotoPerfil');
         if (!publicacionActualizada) throw new NotFoundException('No se pudo actualizar la publicación');
         return { mensaje: 'Comentario eliminado correctamente', comentarios: publicacionActualizada.comentarios };
+    }
+// --- 8. Obtener Comentarios Paginados (GET) ---
+    async obtenerComentariosPaginados(idPublicacion: string, pagina: number, limite: number) {
+        const publicacion = await this.publicacionModel
+            .findById(idPublicacion)
+            .populate('comentarios.usuario', 'nombre nombreUsuario fotoPerfil')
+            .exec();
+
+        if (!publicacion) throw new NotFoundException('Publicación no encontrada');
+
+        // Ordenamos los comentarios del más reciente al más antiguo como pide la rúbrica
+        const comentariosOrdenados = publicacion.comentarios.sort((a: any, b: any) => b.fecha - a.fecha);
+
+        // Calculamos los índices para recortar el array simulando una paginación
+        const inicio = (pagina - 1) * limite;
+        const fin = inicio + limite;
+        const comentariosPaginados = comentariosOrdenados.slice(inicio, fin);
+
+        return {
+            mensaje: 'Comentarios obtenidos correctamente',
+            total: comentariosOrdenados.length,
+            comentarios: comentariosPaginados
+        };
+    }
+
+// --- 9. Modificar Comentario (PUT) ---
+    async modificarComentario(idPublicacion: string, idComentario: string, usuarioId: string, nuevoTexto: string) {
+        // --- el operador posicional $ para actualizar solo el comentario específico ---
+        const publicacionActualizada = await this.publicacionModel.findOneAndUpdate(
+            { 
+                _id: idPublicacion, 
+                "comentarios._id": idComentario, 
+                "comentarios.usuario": usuarioId // Validación estricta: solo el autor puede editar
+            },
+            {
+                $set: {
+                    "comentarios.$.texto": nuevoTexto,
+                    "comentarios.$.modificado": true //  marcarlo como editado
+                }
+            },
+            { new: true }
+        ).populate('comentarios.usuario', 'nombre nombreUsuario fotoPerfil');
+
+        if (!publicacionActualizada) {
+            throw new BadRequestException('No se pudo editar el comentario. O no existe, o no tenés permiso.');
+        }
+
+        return { mensaje: 'Comentario modificado correctamente', comentarios: publicacionActualizada.comentarios };
     }
 }

@@ -36,7 +36,6 @@ export class PublicacionesController {
         return this.publicacionesService.crearPublicacion(usuario.sub, titulo, descripcion, file);
     }
     // --- 2. Listar Publicaciones (GET) ---
-    // Este endpoint es público, por lo que no exigimos token acá
     @Get()
     async listarPublicaciones(
         @Query('orden') orden: string,
@@ -45,6 +44,7 @@ export class PublicacionesController {
         @Query('usuarioId') usuarioId: string // Para el filtro de "Mi Perfil"
     ) {
         /// --- Convertir offset y limit a números para su uso en la consulta ---
+        // --- Offset: Cuántas publicaciones saltar (para paginación) y limit: Límite de publicaciones a devolver ---
         const numOffset = offset ? parseInt(offset, 10) : 0;
         const numLimit = limit ? parseInt(limit, 10) : 10;
         
@@ -67,29 +67,6 @@ export class PublicacionesController {
     async sacarMeGusta(@Param('id') id: string, @Req() request: any) {
         const usuario = this.obtenerUsuarioDelToken(request);
         return this.publicacionesService.sacarMeGusta(id, usuario.sub);
-    }
-    // --- 6. Agregar Comentario (POST) ---
-    @Post(':id/comentarios')
-    async agregarComentario(
-        @Param('id') id: string, 
-        @Body('texto') texto: string, 
-        @Req() request: any
-    ) {
-        if (!texto || texto.trim() === '') {
-            throw new UnauthorizedException('El comentario no puede estar vacío');
-        }
-        const usuario = this.obtenerUsuarioDelToken(request);
-        return this.publicacionesService.agregarComentario(id, usuario.sub, texto);
-    }
-    // --- 7. Eliminar Comentario (DELETE) ---
-    @Delete(':id/comentarios/:idComentario')
-    async eliminarComentario(
-        @Param('id') id: string,
-        @Param('idComentario') idComentario: string,
-        @Req() request: any
-    ) {
-        const usuario = this.obtenerUsuarioDelToken(request);
-        return this.publicacionesService.eliminarComentario(id, idComentario, usuario.sub, usuario.perfil);
     }
 }
 

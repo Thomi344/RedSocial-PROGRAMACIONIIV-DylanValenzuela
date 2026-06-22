@@ -31,7 +31,6 @@ export class Publicaciones {
       params = params.set('usuarioId', usuarioId);
     }
 
-    // Este endpoint es público, no requiere token
     return this.http.get(this.apiUrl, { params });
   }
   // --- Crear Publicación (POST) ---
