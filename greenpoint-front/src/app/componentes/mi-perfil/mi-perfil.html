@@ -30,7 +30,7 @@
 
                         <div class="flex justify-between w-full border-t border-white/5 pt-6">
                             <div class="text-center flex-1">
-                                <span class="block text-3xl font-black text-white mb-1">{{ misPublicaciones()?.length || 0 }}</span>
+                                <span class="block text-3xl font-black text-white mb-1">{{ misPublicaciones().length || 0 }}</span>
                                 <span class="text-[11px] text-gray-500 uppercase tracking-widest font-bold">Posteos</span>
                             </div>
                             <div class="w-px bg-white/5"></div>
@@ -81,7 +81,7 @@
             <div class="lg:col-span-7 xl:col-span-8">
                 <div class="flex items-center justify-between mb-8 border-b border-white/5 pb-4">
                     <h2 class="text-2xl font-black text-white tracking-tight">Tus Posteos</h2>
-                    <span class="text-sm font-bold text-green-400 bg-green-500/10 px-4 py-1.5 rounded-full">{{ misPublicaciones()?.length || 0 }} Publicaciones</span>
+                    <span class="text-sm font-bold text-green-400 bg-green-500/10 px-4 py-1.5 rounded-full">{{ misPublicaciones().length || 0 }} Publicaciones</span>
                 </div>
                 
                 <div *ngIf="!misPublicaciones() || misPublicaciones().length === 0" class="text-center py-20 bg-[#121212] border border-white/5 rounded-3xl">

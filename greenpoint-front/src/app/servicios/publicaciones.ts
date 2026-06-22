@@ -18,7 +18,7 @@ export class Publicaciones {
   }
 
   // --- Obtener Publicaciones (GET) ---
-  // Transformamos la "página" en "offset" para el backend
+  // --- Se puede ordenar por fecha o por popularidad, y se puede paginar ---
   obtenerPublicaciones(orden: string = 'fecha', pagina: number = 1, limite: number = 10, usuarioId?: string): Observable<any> {
     const offset = (pagina - 1) * limite;
     
@@ -60,5 +60,18 @@ export class Publicaciones {
   // --- Eliminar Comentario (DELETE) ---
   eliminarComentario(idPublicacion: string, idComentario: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${idPublicacion}/comentarios/${idComentario}`, { headers: this.getHeaders() });
+  }
+// --- Traer Comentarios Paginados ---
+  obtenerComentarios(idPublicacion: string, pagina: number = 1, limite: number = 5): Observable<any> {
+    return this.http.get(`${this.apiUrl}/${idPublicacion}/comentarios?pagina=${pagina}&limite=${limite}`, { 
+      headers: this.getHeaders() 
+    });
+  }
+
+  // --- Editar Comentario ---
+  editarComentario(idPublicacion: string, idComentario: string, texto: string): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${idPublicacion}/comentarios/${idComentario}`, { texto }, { 
+      headers: this.getHeaders() 
+    });
   }
 }

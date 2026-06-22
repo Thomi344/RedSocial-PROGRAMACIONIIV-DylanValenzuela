@@ -30,15 +30,24 @@ export class PublicacionCard implements OnInit {
   estaEliminando = signal<boolean>(false);
   mostrarModalError = signal<boolean>(false);
   mensajeError = signal<string>('');
-  // Modales específicos para comentarios
+  // --- Modales específicos para comentarios ---
   mostrarModalEliminarComentario = signal<boolean>(false);
   estaEliminandoComentario = signal<boolean>(false);
   comentarioAEliminarId = signal<string>('');
+  // --- Estados de Edición de Comentarios ---
+  comentarioEnEdicionId = signal<string>('');
+  textoEdicion = signal<string>('');
+  guardandoEdicion = signal<boolean>(false);
+  // --- Paginación de Comentarios ---
+  comentariosVisibles = signal<any[]>([]);
+  paginaComentarios = 1;
+  totalComentarios = signal<number>(0);
+  cargandoMas = signal<boolean>(false);
 
 
   ngOnInit() {
     this.cantidadLikes.set(this.publicacion.likes?.length || 0);
-    
+    this.totalComentarios.set(this.publicacion.comentarios?.length || 0);
     // Leemos la señal UNA sola vez y la guardamos en la variable 'user'
     const user = this.usuarioActual();
     
@@ -75,10 +84,37 @@ export class PublicacionCard implements OnInit {
     }
   }
   // --- Lógica de Comentarios ---
-  toggleComentarios() {
-    this.mostrarComentarios.update(v => !v);
-  }
 
+  async toggleComentarios() {
+    this.mostrarComentarios.update(v => !v);
+  // --- Si acabamos de abrir los comentarios y no hay comentarios cargados, traemos la primera página ---
+    if (this.mostrarComentarios() && this.comentariosVisibles().length === 0 && this.totalComentarios() > 0) {
+      await this.cargarMasComentarios(true);
+    }
+  }
+  async cargarMasComentarios(primeraCarga = false) {
+      if (this.cargandoMas()) return;
+      this.cargandoMas.set(true);
+
+      try {
+        // Pedimos 5 comentarios por página
+        const res = await firstValueFrom(this.publicacionesService.obtenerComentarios(this.publicacion._id, this.paginaComentarios, 5));
+        
+        if (primeraCarga) {
+          this.comentariosVisibles.set(res.comentarios);
+        } else {
+          // Concatenamos los nuevos a los que ya teníamos
+          this.comentariosVisibles.update(actuales => [...actuales, ...res.comentarios]);
+        }
+        
+        this.totalComentarios.set(res.total);
+        this.paginaComentarios++; // Preparamos la página para el próximo clic
+      } catch (error) {
+        console.error('Error al cargar paginación', error);
+      } finally {
+        this.cargandoMas.set(false);
+      }
+    }
   actualizarTextoComentario(evento: any) {
     this.nuevoComentario.set(evento.target.value);
   }
@@ -92,7 +128,11 @@ export class PublicacionCard implements OnInit {
       const res = await firstValueFrom(this.publicacionesService.agregarComentario(this.publicacion._id, texto));
       // Actualizamos la lista de comentarios localmente con lo que devuelve el back
       this.publicacion.comentarios = res.comentarios;
-      this.nuevoComentario.set(''); // Limpiamos el input
+      this.totalComentarios.set(res.comentarios.length);
+      // Reseteamos y volvemos a cargar la página 1 para ver el comentario nuevo arriba
+      this.paginaComentarios = 1;
+      await this.cargarMasComentarios(true);
+      this.nuevoComentario.set('');
     } catch (error) {
       console.error('Error al comentar', error);
       this.mensajeError.set('Hubo un problema al publicar tu comentario.');
@@ -170,5 +210,46 @@ export class PublicacionCard implements OnInit {
     if (!user) return false;
     
     return this.publicacion.usuario._id === user.id || user.perfil === 'administrador';
+  }
+  // --- Lógica de Edición ---
+  puedeEditarComentario(comentario: any): boolean {
+    const user = this.usuarioActual();
+    if (!user || !comentario.usuario) return false;
+    return comentario.usuario._id === user.id; // Solo el creador original puede editar
+  }
+
+  iniciarEdicion(comentario: any) {
+    this.comentarioEnEdicionId.set(comentario._id);
+    this.textoEdicion.set(comentario.texto);
+  }
+
+  cancelarEdicion() {
+    this.comentarioEnEdicionId.set('');
+    this.textoEdicion.set('');
+  }
+
+  actualizarTextoEdicion(evento: any) {
+    this.textoEdicion.set(evento.target.value);
+  }
+
+  async guardarEdicion() {
+    const texto = this.textoEdicion().trim();
+    const idComentario = this.comentarioEnEdicionId();
+
+    if (!texto || !idComentario || this.guardandoEdicion()) return;
+
+    this.guardandoEdicion.set(true);
+    try {
+      const res = await firstValueFrom(this.publicacionesService.editarComentario(this.publicacion._id, idComentario, texto));
+      // --- Actualizamos la lista de comentarios localmente con lo que devuelve el back ---
+      this.publicacion.comentarios = res.comentarios; 
+      this.cancelarEdicion();
+    } catch (error) {
+      console.error('Error al editar comentario', error);
+      this.mensajeError.set('Hubo un problema al editar tu comentario.');
+      this.mostrarModalError.set(true);
+    } finally {
+      this.guardandoEdicion.set(false);
+    }
   }
 }
