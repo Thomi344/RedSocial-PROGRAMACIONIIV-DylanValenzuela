@@ -12,7 +12,8 @@ import { RouterLink } from '@angular/router';
 })
 export class PublicacionCard implements OnInit {
   @Input() publicacion: any;
-
+  @Input() vistaDetalle: boolean = false;
+  
   private authService = inject(Auth);
   private publicacionesService = inject(Publicaciones);
 

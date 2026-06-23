@@ -59,7 +59,7 @@
 
     <div *ngIf="mostrarComentarios()" class="mt-4 pt-4 border-t border-white/5">
         
-        <div class="space-y-4 mb-4 max-h-60 overflow-y-auto custom-scrollbar pr-2">
+        <div class="space-y-4 mb-4 pr-2" [ngClass]="{'max-h-60 overflow-y-auto custom-scrollbar': !vistaDetalle}">
             <div *ngIf="totalComentarios() === 0" class="text-center text-gray-500 text-sm py-4">
                 Sé el primero en dejar un comentario.
             </div>
