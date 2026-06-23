@@ -33,6 +33,10 @@ export class Publicaciones {
 
     return this.http.get(this.apiUrl, { params });
   }
+  // --- Traer UNA publicación por ID ---
+  obtenerPublicacionPorId(id: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
+  }
   // --- Crear Publicación (POST) ---
   // Recibe un FormData porque puede incluir un archivo de imagen
   crearPublicacion(datosFormulario: FormData): Observable<any> {

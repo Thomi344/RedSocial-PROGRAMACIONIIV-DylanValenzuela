@@ -22,6 +22,11 @@ export const routes: Routes = [
         canActivate: [authGuard]
     },
     {
+        path: 'publicacion/:id',
+        loadComponent: () => import('./componentes/publicacion-detalle/publicacion-detalle').then(m => m.PublicacionDetalle),
+        canActivate: [authGuard]
+    },
+    {
         path:'registro',
         loadComponent: () => import('./componentes/registro/registro').then(m => m.Registro)
     },

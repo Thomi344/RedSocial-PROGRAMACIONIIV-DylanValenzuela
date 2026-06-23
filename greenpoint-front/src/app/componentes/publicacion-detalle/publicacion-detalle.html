@@ -1,0 +1,16 @@
+<div class="min-h-screen bg-[#09090b] text-white pt-24 pb-12 px-4 flex justify-center">
+    
+    <div *ngIf="cargando()" class="w-full max-w-2xl mt-10 flex flex-col gap-4 animate-pulse">
+        <div class="h-12 bg-white/5 rounded-full w-48 mb-4"></div>
+        <div class="h-64 bg-white/5 rounded-2xl w-full"></div>
+    </div>
+
+    <div *ngIf="error() && !cargando()" class="text-center mt-20">
+        <h2 class="text-2xl font-bold text-gray-400">Publicación no encontrada</h2>
+        <p class="text-gray-500 mt-2">Es posible que haya sido eliminada o el enlace sea incorrecto.</p>
+    </div>
+
+    <div *ngIf="publicacion() && !cargando()" class="w-full max-w-2xl">
+        <app-publicacion-card [publicacion]="publicacion()"></app-publicacion-card>
+    </div>
+</div>
