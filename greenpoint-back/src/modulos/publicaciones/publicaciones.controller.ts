@@ -50,6 +50,11 @@ export class PublicacionesController {
         
         return this.publicacionesService.listarPublicaciones(orden, numOffset, numLimit, usuarioId);
     }    
+    // --- Obtener Una Publicación (GET) ---
+    @Get(':id')
+    async obtenerPublicacion(@Param('id') id: string) {
+        return this.publicacionesService.obtenerPublicacionPorId(id);
+    }
     // --- 3. Eliminar Publicación (DELETE Lógico) ---
     @Delete(':id')
     async eliminarPublicacion(@Param('id') id: string, @Req() request: any) {

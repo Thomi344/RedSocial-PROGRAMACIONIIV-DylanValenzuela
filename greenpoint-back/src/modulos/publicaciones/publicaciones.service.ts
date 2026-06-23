@@ -56,6 +56,16 @@ export class PublicacionesService {
 
         return publicaciones;
     }
+    // --- Obtener Una Publicación (GET) ---
+    async obtenerPublicacionPorId(id: string) {
+        const publicacion = await this.publicacionModel.findById(id)
+            .populate('usuario', 'nombre nombreUsuario fotoPerfil')
+            .populate('comentarios.usuario', 'nombre nombreUsuario fotoPerfil')
+            .exec();
+            
+        if (!publicacion) throw new NotFoundException('Publicación no encontrada');
+        return publicacion;
+    }
     // --- 3. Eliminar Publicación (DELETE) ---
     async eliminarPublicacion(idPublicacion: string, usuarioLogeadoId: string, perfilUsuario: string) {
         const publicacion = await this.publicacionModel.findById(idPublicacion);
