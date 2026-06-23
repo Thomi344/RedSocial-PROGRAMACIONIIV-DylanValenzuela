@@ -8,7 +8,7 @@ import { CloudinaryModule } from '../cloudinary/cloudinary.module';
 @Module({
   imports: [UsuariosModule, CloudinaryModule, JwtModule.register({
     secret: process.env['JWT_SECRET'],
-    signOptions: { expiresIn: '15m' },
+    signOptions: { expiresIn: '2m' },
   })],
   controllers: [AutenticacionController],
   providers: [AutenticacionService],
