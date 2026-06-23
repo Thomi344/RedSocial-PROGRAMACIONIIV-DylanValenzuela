@@ -10,11 +10,18 @@ export class Auth {
   // --- Estados globales reactivos ---
   estaLogeado = signal<boolean>(false);
   usuarioActual = signal<any>(null);
-
+  // --- SEÑAL PARA EL MODAL DE TIEMPO ---
+  mostrarModalRefrescar = signal<boolean>(false);
+  private avisoTimeoutId: any;
   constructor(private http: HttpClient) {
     // --- Al iniciar el servicio, chequeamos si hay una sesión guardada en localStorage ---
     this.chequearSesionGuardada();
   }
+  // ⏱️ TIEMPOS DEL RELOJ
+  //(Avisa a los 10 minutos):
+  // private readonly TIEMPO_AVISO = 10 * 60 * 1000; 
+  // Avisa a los 40 segundos (para pruebas):
+  private readonly TIEMPO_AVISO = 40 * 1000;
 
   private chequearSesionGuardada() {
     const token = localStorage.getItem('token_greenpoint');
@@ -23,8 +30,27 @@ export class Auth {
     if (token && usuario) {
       this.usuarioActual.set(JSON.parse(usuario));
       this.estaLogeado.set(true);
+      this.iniciarTemporizador();
     }
   }
+  // --- LÓGICA DEL TEMPORIZADOR ---
+    iniciarTemporizador() {
+      this.limpiarTemporizador(); // Resetea si ya había uno
+      
+      if (!this.obtenerToken()) return;
+
+      // A los 10 minutos (o 40 seg en test), dispara el modal
+      this.avisoTimeoutId = setTimeout(() => {
+        this.mostrarModalRefrescar.set(true);
+      }, this.TIEMPO_AVISO);
+    }
+
+    limpiarTemporizador() {
+      if (this.avisoTimeoutId) {
+        clearTimeout(this.avisoTimeoutId);
+      }
+      this.mostrarModalRefrescar.set(false);
+    }
   // --- Función  de Registro  ---
   registrarUsuario(datosRegistro: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/registro`, datosRegistro);
@@ -44,6 +70,7 @@ export class Auth {
           }
           
           this.estaLogeado.set(true);
+          this.iniciarTemporizador();
         }
       })
     );
@@ -55,6 +82,7 @@ export class Auth {
     localStorage.removeItem('usuario_greenpoint');
     this.usuarioActual.set(null);
     this.estaLogeado.set(false);
+    this.limpiarTemporizador();
   }
 
   obtenerToken(): string | null {
@@ -66,7 +94,7 @@ export class Auth {
     const token = this.obtenerToken();
     return this.http.post(`${this.apiUrl}/autorizar`, {}, {
       headers: { Authorization: `Bearer ${token}` }
-    });
+    }).pipe(tap(()=>this.iniciarTemporizador()));// Reinicia el reloj si la app valida OK al abrir
   }
 
   // --- Refrescar Token  ---
@@ -78,6 +106,7 @@ export class Auth {
       tap((respuesta: any) => {
         if (respuesta.token) {
           localStorage.setItem('token_greenpoint', respuesta.token);
+          this.iniciarTemporizador();
         }
       })
     );

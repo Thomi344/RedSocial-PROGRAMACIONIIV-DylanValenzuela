@@ -13,7 +13,7 @@ import { firstValueFrom } from 'rxjs';
 export class App {
   protected readonly title = signal('GreenPoint');
 
-  private authService = inject(Auth);
+  authService = inject(Auth);
   private router = inject(Router);
 
   // --- Estado de la aplicación ---
@@ -33,12 +33,29 @@ export class App {
       await firstValueFrom(this.authService.validarToken());
       // --- Si el backend responde que el token es válido, seguimos en la app ---
       this.cargandoInicial.set(false);
-      this.router.navigate(['/publicaciones']);
+      this.authService.mostrarModalRefrescar.set(false)
     }catch (error) {
       console.warn('Token inválido o expirado. Redirigiendo al login...');
       this.authService.cerrarSesion(); // Borra la sesión corrupta
       this.cargandoInicial.set(false);
       this.router.navigate(['/login']);
     }
+  }
+  // --- Función para el botón del Modal ---
+  async extenderSesion() {
+    try {
+      await firstValueFrom(this.authService.refrescarToken());
+      console.log('Sesión extendida con éxito.');
+      this.authService.mostrarModalRefrescar.set(false); // Cerramos el modal
+    } catch (error) {
+      console.error('No se pudo refrescar el token', error);
+      this.authService.cerrarSesion();
+    }
+  }
+  // ---Función para el botón Salir ---
+  cerrarSesionDesdeModal() {
+    this.authService.cerrarSesion(); // Borra los tokens
+    this.authService.mostrarModalRefrescar.set(false); // Oculta el modal
+    this.router.navigate(['/login']); // Fuerza la navegación desde el componente
   }
 }
