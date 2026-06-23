@@ -60,4 +60,26 @@ export class Auth {
   obtenerToken(): string | null {
     return localStorage.getItem('token_greenpoint');
   }
+
+// --- Validar Token al inicio ---
+  validarToken(): Observable<any> {
+    const token = this.obtenerToken();
+    return this.http.post(`${this.apiUrl}/autorizar`, {}, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+  }
+
+  // --- Refrescar Token  ---
+  refrescarToken(): Observable<any> {
+    const token = this.obtenerToken();
+    return this.http.post(`${this.apiUrl}/refrescar`, {}, {
+      headers: { Authorization: `Bearer ${token}` }
+    }).pipe(
+      tap((respuesta: any) => {
+        if (respuesta.token) {
+          localStorage.setItem('token_greenpoint', respuesta.token);
+        }
+      })
+    );
+  }
 }
