@@ -17,7 +17,7 @@ export class Auth {
     // --- Al iniciar el servicio, chequeamos si hay una sesión guardada en localStorage ---
     this.chequearSesionGuardada();
   }
-  // ⏱️ TIEMPOS DEL RELOJ
+  //  TIEMPOS DEL RELOJ
   //(Avisa a los 10 minutos):
   // private readonly TIEMPO_AVISO = 10 * 60 * 1000; 
   // Avisa a los 40 segundos (para pruebas):
@@ -39,7 +39,7 @@ export class Auth {
       
       if (!this.obtenerToken()) return;
 
-      // A los 10 minutos (o 40 seg en test), dispara el modal
+      //  40 seg en test, dispara el modal
       this.avisoTimeoutId = setTimeout(() => {
         this.mostrarModalRefrescar.set(true);
       }, this.TIEMPO_AVISO);
