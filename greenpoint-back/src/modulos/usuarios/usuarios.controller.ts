@@ -1,12 +1,13 @@
-import { Controller, Get,Param, Put, Body, Req, UseInterceptors, UploadedFile, BadRequestException,UnauthorizedException } from '@nestjs/common';
+import { Controller, Get,Param, Put, Body, Req, UseInterceptors, UploadedFile, BadRequestException,UnauthorizedException ,UseGuards,Post,Delete} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UsuariosService } from './usuarios.service';
 import {CloudinaryService } from '../cloudinary/cloudinary.service';
 import { JwtService } from '@nestjs/jwt';
+import {AdminGuard} from '../autenticacion/guards/admin.guard';
+
 @Controller('usuarios')
 export class UsuariosController {
     constructor(private usuariosService: UsuariosService, private cloudinaryService: CloudinaryService, private jwtService: JwtService) {}
-
     // --- Obtener Usuario del token ---
     private obtenerUsuarioDelToken(request: any) {
             const authHeader = request.headers.authorization;
@@ -22,7 +23,7 @@ export class UsuariosController {
                 throw new UnauthorizedException('Token inválido o expirado. Iniciá sesión nuevamente.');
             }
         }
-
+    // === Rutas de Usuario ===
     // --- 1. Obtener mi perfil (GET /usuarios/mi-perfil) ---
     @Get('mi-perfil')
     async obtenerMiPerfil(@Req() request: any) {
@@ -64,5 +65,32 @@ export class UsuariosController {
     @Get(':id')
     async obtenerPerfilDeOtro(@Param('id') id: string) {
         return this.usuariosService.obtenerPerfil(id);
+    }
+
+    // === Rutas Admin ===
+    // --- 4. Obtener todos los usuarios ---
+    @Get()
+    @UseGuards(AdminGuard)
+    async obtenerTodosLosUsuarios() {
+        return this.usuariosService.listarTodosLosUsuarios();
+    }
+    // --- 5. Crear usuario desde admin ---
+    @Post()
+    @UseGuards(AdminGuard)
+    async crearUsuarioDesdeAdmin(@Body() datos: any) {
+        return this.usuariosService.crearDesdeAdmin(datos);
+    }
+
+    // --- 6. Desactivar usuario (baja) ---
+    @Delete(':id/desactivar')
+    @UseGuards(AdminGuard)
+    async desactivarUsuario(@Param('id') id: string) {
+        return this.usuariosService.cambiarEstado(id, false);
+    }
+    // --- 7. Activar usuario (alta) ---
+    @Put(':id/activar')
+    @UseGuards(AdminGuard)
+    async activarUsuario(@Param('id') id: string) {
+        return this.usuariosService.cambiarEstado(id, true);
     }
 }

@@ -139,7 +139,7 @@ export class PublicacionesService {
             throw new UnauthorizedException('No tenés permiso para eliminar este comentario');
         }
 
-        // Removemos el comentario de manera atómica usando $pull de MongoDB
+        // Removemos el comentario usando $pull de Mongo
         const publicacionActualizada = await this.publicacionModel.findByIdAndUpdate(
             idPublicacion,
             { $pull: { comentarios: { _id: idComentario } } },
@@ -149,6 +149,7 @@ export class PublicacionesService {
         return { mensaje: 'Comentario eliminado correctamente', comentarios: publicacionActualizada.comentarios };
     }
 // --- 8. Obtener Comentarios Paginados (GET) ---
+// --- paginación de comentarios en la vista de una publicación ---
     async obtenerComentariosPaginados(idPublicacion: string, pagina: number, limite: number) {
         const publicacion = await this.publicacionModel
             .findById(idPublicacion)

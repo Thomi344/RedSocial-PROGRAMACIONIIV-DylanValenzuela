@@ -77,7 +77,10 @@ export class AutenticacionService {
         if(!usuario){
             throw new UnauthorizedException('Credenciales inválidas');
         }
-
+        // --- Verificar si el usuario está activo ---
+        if(usuario.activo === false){
+            throw new UnauthorizedException('Tu cuenta ha sido desactivada. Contactá al soporte para más información.');
+        }
         // --- Comparar contraseña ---
         const esContrasenaValida = await bcrypt.compare(contrasena, usuario.contrasena);
         if(!esContrasenaValida){
