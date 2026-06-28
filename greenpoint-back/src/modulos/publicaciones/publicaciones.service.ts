@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, UnauthorizedException,BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException,BadRequestException,ForbiddenException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Publicacion, PublicacionDocument } from './entidades/publicacion.schema';
@@ -73,10 +73,10 @@ export class PublicacionesService {
         if (!publicacion) {
             throw new NotFoundException('La publicación no existe');
         }
-
+        const esAdmin = perfilUsuario === 'admin';
         // --- Solo el creador de la publicación o un administrador puede eliminarla ---
-        if (publicacion.usuario.toString() !== usuarioLogeadoId && perfilUsuario !== 'administrador') {
-            throw new UnauthorizedException('No tenés permiso para eliminar este posteo');
+        if (publicacion.usuario.toString() !== usuarioLogeadoId && usuarioLogeadoId && !esAdmin) {
+            throw new ForbiddenException('No tenés permiso para eliminar este posteo');
         }
 
         // --- Cambiamos el estado de la publicación a inactiva en lugar de eliminarla físicamente ---
@@ -135,8 +135,9 @@ export class PublicacionesService {
         if (!comentario) throw new NotFoundException('Comentario no encontrado');
 
         // Validación estricta: Solo el dueño del comentario o un administrador pueden borrarlo
-        if (comentario.usuario.toString() !== usuarioId && perfilUsuario !== 'administrador') {
-            throw new UnauthorizedException('No tenés permiso para eliminar este comentario');
+        const esAdmin = perfilUsuario === 'admin';
+        if (comentario.usuario.toString() !== usuarioId && !esAdmin) {
+            throw new ForbiddenException('No tenés permiso para eliminar este comentario');
         }
 
         // Removemos el comentario usando $pull de Mongo

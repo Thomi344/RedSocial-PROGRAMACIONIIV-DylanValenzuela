@@ -69,6 +69,7 @@ export class UsuariosService {
         const { contrasena, ...usuarioSinContrasena } = usuarioGuardado.toObject();
         return {mensaje: 'Usuario creado exitosamente', usuario: usuarioSinContrasena};
         }catch(error:any){
+            // --- Manejo de errores de duplicación de campos únicos (como email o nombreUsuario) ---
             if (error.code === 11000) {
                 // ---- Detecta el campo duplicado y lanza un error de conflicto con un mensaje amigable ---
                 const campoDuplicado = Object.keys(error.keyValue)[0];
