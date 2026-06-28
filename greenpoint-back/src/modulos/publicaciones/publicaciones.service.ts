@@ -198,4 +198,100 @@ export class PublicacionesService {
 
         return { mensaje: 'Comentario modificado correctamente', comentarios: publicacionActualizada.comentarios };
     }
+    // === Estadísticas ===
+    // --- 10. Cuenta cuántas publicaciones hizo cada usuario en un rango de fechas ---
+    async contarPublicacionesPorUsuario(inicio: string, fin: string) {
+        const fechaInicio = new Date(inicio);
+        const fechaFin = new Date(fin);
+        // --- Ajustamos la hora de fin para incluir todo el día hasta las 23:59:59.999 ---
+        fechaFin.setHours(23, 59, 59, 999); 
+
+        return await this.publicacionModel.aggregate([
+            {
+                $match: {
+                    activa: true,
+                    createdAt: { $gte: fechaInicio, $lte: fechaFin }
+                }
+            },
+            {
+                $group: {
+                    _id: '$usuario', // Agrupamos por la referencia del usuario
+                    cantidad: { $sum: 1 }
+                }
+            },
+            // --- Lookup para traer los datos del usuario desde la colección de usuarios ---
+            {
+                $lookup: {
+                    from: 'usuarios',
+                    localField: '_id',
+                    foreignField: '_id',
+                    as: 'usuarioInfo'
+                }
+            },
+            { $unwind: '$usuarioInfo' },
+            {
+                $project: {
+                    _id: 0,
+                    nombreUsuario: '$usuarioInfo.nombreUsuario',
+                    cantidad: 1
+                }
+            }
+        ]);
+    }
+
+    // --- Gráfico 2: Cuenta cuántos comentarios se hicieron en ese rango de fechas ---
+    async contarComentariosTotales(inicio: string, fin: string) {
+        const fechaInicio = new Date(inicio);
+        const fechaFin = new Date(fin);
+        fechaFin.setHours(23, 59, 59, 999);
+
+        const resultado = await this.publicacionModel.aggregate([
+            { $match: { activa: true } },
+            { $unwind: '$comentarios' }, // Desarmamos el array de comentarios
+            {
+                $match: {
+                    'comentarios.fecha': { $gte: fechaInicio, $lte: fechaFin }
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    total: { $sum: 1 }
+                }
+            }
+        ]);
+
+        return { totalComentarios: resultado[0]?.total || 0 };
+    }
+
+    // --- Gráfico 3: Cuenta cuántos comentarios tiene cada publicación en ese rango de fechas ---
+    async contarComentariosPorPublicacion(inicio: string, fin: string) {
+        const fechaInicio = new Date(inicio);
+        const fechaFin = new Date(fin);
+        fechaFin.setHours(23, 59, 59, 999);
+
+        return await this.publicacionModel.aggregate([
+            { $match: { activa: true } },
+            { $unwind: '$comentarios' },
+            {
+                $match: {
+                    'comentarios.fecha': { $gte: fechaInicio, $lte: fechaFin }
+                }
+            },
+            {
+                $group: {
+                    _id: '$_id',
+                    titulo: { $first: '$titulo' },
+                    cantidadComentarios: { $sum: 1 }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    titulo: 1,
+                    cantidadComentarios: 1
+                }
+            }
+    ]);
+}
 }
