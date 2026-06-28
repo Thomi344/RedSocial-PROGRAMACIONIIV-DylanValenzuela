@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException ,ConflictException,InternalServerErrorException} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import{ Usuario, UsuarioDocument } from './entidades/usuario.schema';
@@ -55,6 +55,7 @@ export class UsuariosService {
     }
     // ---Crear usuario admin ---
     async crearDesdeAdmin (datos: any){
+        try{
         // --- Encriptar contraseña ---
         const salt = await bcrypt.genSalt(10);
         const contrasenaEncriptada = await bcrypt.hash(datos.contrasena, salt);
@@ -67,6 +68,15 @@ export class UsuariosService {
         // --- Retornar datos del nuevo usuario (sin la contraseña) ---
         const { contrasena, ...usuarioSinContrasena } = usuarioGuardado.toObject();
         return {mensaje: 'Usuario creado exitosamente', usuario: usuarioSinContrasena};
+        }catch(error:any){
+            if (error.code === 11000) {
+                // ---- Detecta el campo duplicado y lanza un error de conflicto con un mensaje amigable ---
+                const campoDuplicado = Object.keys(error.keyValue)[0];
+                throw new ConflictException(`El ${campoDuplicado} ingresado ya está registrado en el sistema.`);
+                }           
+        }
+        // --- Si ocurre otro error, lanzamos un error interno del servidor ---
+        throw new InternalServerErrorException('Error al crear el usuario en la base de datos.');
 
 
     }
