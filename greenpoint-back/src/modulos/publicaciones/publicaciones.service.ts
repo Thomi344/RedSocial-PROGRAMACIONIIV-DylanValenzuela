@@ -219,11 +219,12 @@ export class PublicacionesService {
                     cantidad: { $sum: 1 }
                 }
             },
+            { $addFields: { usuarioIdObj: { $toObjectId: '$_id' } } },
             // --- Lookup para traer los datos del usuario desde la colección de usuarios ---
             {
                 $lookup: {
                     from: 'usuarios',
-                    localField: '_id',
+                    localField: 'usuarioIdObj',
                     foreignField: '_id',
                     as: 'usuarioInfo'
                 }
