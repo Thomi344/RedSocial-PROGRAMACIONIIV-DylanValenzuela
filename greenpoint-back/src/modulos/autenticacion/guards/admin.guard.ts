@@ -20,14 +20,14 @@ export class AdminGuard implements CanActivate {
 
     try {
       // --- Verifica el token y extrae el payload ---
-      const payloead = this.jwtService.verify(token, { secret: process.env.JWT_SECRET });
+      const payload = this.jwtService.verify(token, { secret: process.env.JWT_SECRET });
       // --- Verifica si el rol del usuario es 'admin' ---
-      console.log('--- CONTENIDO REAL DEL TOKEN EN EL BACK-END ---', payloead);
-      if (payloead.perfil !== 'admin') {
+      
+      if (payload.perfil !== 'admin' && payload.rol !== 'admin') {
         throw new ForbiddenException('Acceso denegado: se requiere rol de administrador');
       }
       // --- Si todo está bien, permite el acceso ---
-      request.user = payloead; // Agrega el payload del token al objeto de la solicitud para su uso posterior
+      request.user = payload; // Agrega el payload del token al objeto de la solicitud para su uso posterior
       return true;
     } catch (error) {
       if(error instanceof ForbiddenException) throw error;
