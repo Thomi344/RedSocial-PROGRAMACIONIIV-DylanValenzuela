@@ -59,7 +59,7 @@ export class PublicacionesController {
     @Delete(':id')
     async eliminarPublicacion(@Param('id') id: string, @Req() request: any) {
         const usuario = this.obtenerUsuarioDelToken(request);
-        return this.publicacionesService.eliminarPublicacion(id, usuario.sub, usuario.perfil);
+        return this.publicacionesService.eliminarPublicacion(id, usuario.sub, usuario.rol);
     }
     // --- 4. Dar Me Gusta (POST) ---
     @Post(':id/like')

@@ -75,6 +75,6 @@ export class ComentariosController {
     ) {
         // --- Validar que el usuario esté autenticado ---
         const usuario = this.obtenerUsuarioDelToken(request);
-        return this.publicacionesService.eliminarComentario(idPublicacion, idComentario, usuario.sub, usuario.perfil);
+        return this.publicacionesService.eliminarComentario(idPublicacion, idComentario, usuario.sub, usuario.rol);
     }
 }
