@@ -199,7 +199,7 @@ export class PublicacionesService {
         return { mensaje: 'Comentario modificado correctamente', comentarios: publicacionActualizada.comentarios };
     }
     // === Estadísticas ===
-    // --- 10. Cuenta cuántas publicaciones hizo cada usuario en un rango de fechas ---
+// --- 10. Cuenta cuántas publicaciones hizo cada usuario en un rango de fechas ---
     async contarPublicacionesPorUsuario(inicio: string, fin: string) {
         const fechaInicio = new Date(inicio);
         const fechaFin = new Date(fin);
@@ -240,7 +240,7 @@ export class PublicacionesService {
         ]);
     }
 
-    // --- Gráfico 2: Cuenta cuántos comentarios se hicieron en ese rango de fechas ---
+// --- Gráfico 2: Cuenta cuántos comentarios se hicieron en ese rango de fechas ---
     async contarComentariosTotales(inicio: string, fin: string) {
         const fechaInicio = new Date(inicio);
         const fechaFin = new Date(fin);
@@ -265,7 +265,7 @@ export class PublicacionesService {
         return { totalComentarios: resultado[0]?.total || 0 };
     }
 
-    // --- Gráfico 3: Cuenta cuántos comentarios tiene cada publicación en ese rango de fechas ---
+// --- Gráfico 3: Cuenta cuántos comentarios tiene cada publicación en ese rango de fechas ---
     async contarComentariosPorPublicacion(inicio: string, fin: string) {
         const fechaInicio = new Date(inicio);
         const fechaFin = new Date(fin);

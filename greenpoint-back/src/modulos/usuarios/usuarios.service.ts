@@ -3,10 +3,11 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import{ Usuario, UsuarioDocument } from './entidades/usuario.schema';
 import bcrypt from 'bcryptjs';
+import {Publicacion,PublicacionDocument} from '../publicaciones/entidades/publicacion.schema';
 @Injectable()
 export class UsuariosService {
 
-    constructor(@InjectModel(Usuario.name) private usuarioModel: Model<UsuarioDocument>) {}
+    constructor(@InjectModel(Usuario.name) private usuarioModel: Model<UsuarioDocument>, @InjectModel(Publicacion.name) private publicacionModel: Model<PublicacionDocument>) {}
 
     // === Metodos de Usuario ===
     // --- Obtener Perfil por ID ---
@@ -51,6 +52,8 @@ export class UsuariosService {
         if (!usuarioActualizado) {
             throw new NotFoundException('Usuario no encontrado');
         }
+        // --- Desactivar o activar publicaciones asociadas al usuario ---
+        await this.publicacionModel.updateMany({ usuario: id }, { activa: activo });
         return {mensaje: activo ? 'Usuario habilitado correctamente' : 'Usuario deshabilitado correctamente', usuario: usuarioActualizado};
     }
     // ---Crear usuario admin ---
