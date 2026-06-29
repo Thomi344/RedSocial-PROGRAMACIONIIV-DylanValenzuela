@@ -10,12 +10,13 @@ export class AdminGuard implements CanActivate {
   
   canActivate(context: ExecutionContext,): boolean | Promise<boolean> | Observable<boolean> {
     const request = context.switchToHttp().getRequest();
+    // --- Obtener el token del encabezado de autorización ---
     const authHeader = request.headers.authorization;
     
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       throw new UnauthorizedException('Falta el token de autorización o el formato es incorrecto');
     }
-
+    // --- Extraer el token del encabezado ---
     const token = authHeader.split(' ')[1];
 
     try {

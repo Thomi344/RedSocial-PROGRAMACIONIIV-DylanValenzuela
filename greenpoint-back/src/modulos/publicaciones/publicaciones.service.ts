@@ -206,6 +206,7 @@ export class PublicacionesService {
         // --- Ajustamos la hora de fin para incluir todo el día hasta las 23:59:59.999 ---
         fechaFin.setHours(23, 59, 59, 999); 
 
+        // --- Usa aggregate para contar publicaciones activas por usuario en el rango de fechas ---
         return await this.publicacionModel.aggregate([
             {
                 $match: {

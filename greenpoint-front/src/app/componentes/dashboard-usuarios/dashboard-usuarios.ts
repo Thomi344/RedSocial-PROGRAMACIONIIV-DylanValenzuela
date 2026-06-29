@@ -85,7 +85,7 @@ export class DashboardUsuarios implements OnInit {
 
     const valores = this.formularioRegistro.value;
 
-    // --- Preparamos los datos para enviarlos al backend ---
+    // --- Prepara los datos para enviarlos al backend ---
     const datosParaBackend = {
       nombre: `${valores.nombre} ${valores.apellido}`,
       nombreUsuario: valores.nombreUsuario,
@@ -96,7 +96,7 @@ export class DashboardUsuarios implements OnInit {
       rol: valores.rol
     };
 
-    // --- Activamos el spinner de carga ---
+    // --- Activa el spinner de carga ---
     this.cargando.set(true);
 
     this.usuariosService.crearUsuario(datosParaBackend).subscribe({
@@ -107,7 +107,7 @@ export class DashboardUsuarios implements OnInit {
         this.abrirModal('¡Usuario registrado con éxito en la base de datos!', false);
       },
       error: (err) => {
-        // Captura el mensaje de error real que nos manda NestJS
+        // Captura el mensaje de error real 
         const mensajeError = err.error?.message || 'Ocurrió un error al conectar con el servidor.';
         this.abrirModal(mensajeError, true);
         console.error('Error al crear el usuario', err);
