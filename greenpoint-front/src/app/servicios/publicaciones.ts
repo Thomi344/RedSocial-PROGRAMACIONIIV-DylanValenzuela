@@ -8,7 +8,7 @@ export class Publicaciones {
   private http = inject(HttpClient);
   // --- URL base del backend para publicaciones ---
   private apiUrl = 'https://greenpoint-back.onrender.com/publicaciones';
-
+  private UrlEstadisticas = 'https://greenpoint-back.onrender.com/estadisticas';
   // --- Arma las cabeceras con el token de seguridad ---
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('token_greenpoint');
@@ -77,5 +77,19 @@ export class Publicaciones {
     return this.http.put(`${this.apiUrl}/${idPublicacion}/comentarios/${idComentario}`, { texto }, { 
       headers: this.getHeaders() 
     });
+  }
+
+  // === Estadísticas ===
+  // --- Obtener estadísticas de publicaciones ---
+  obtenerEstadisticasPublicaciones(inicio: string, fin: string) {
+    return this.http.get<any[]>(`${this.UrlEstadisticas}/publicaciones-por-usuario?inicio=${inicio}&fin=${fin}`, { headers: this.getHeaders() });
+  }
+  // --- Obtener estadísticas de comentarios totales ---
+  obtenerEstadisticasComentariosTotales(inicio: string, fin: string) {
+      return this.http.get<{totalComentarios: number}>(`${this.UrlEstadisticas}/comentarios-totales?inicio=${inicio}&fin=${fin}`, { headers: this.getHeaders() });
+    }
+  // --- Obtener estadísticas de comentarios por publicación ---
+  obtenerEstadisticasComentariosPorPublicacion(inicio: string, fin: string) {
+    return this.http.get<any[]>(`${this.UrlEstadisticas}/comentarios-por-publicacion?inicio=${inicio}&fin=${fin}`, { headers: this.getHeaders() });
   }
 }

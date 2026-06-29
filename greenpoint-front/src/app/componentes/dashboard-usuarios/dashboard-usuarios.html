@@ -1,0 +1,189 @@
+<div class="min-h-screen bg-[#09090b] text-white pt-24 px-6 pb-12 relative">
+    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
+        
+        <div class="w-full lg:w-1/3 bg-zinc-900 border border-white/5 rounded-2xl p-6 h-fit shadow-lg">
+            <h2 class="text-xl font-bold mb-6 text-green-500">Crear Nuevo Usuario</h2>
+            
+            <form [formGroup]="formularioRegistro" (ngSubmit)="crearUsuario()" class="space-y-4">
+                
+                <div class="flex gap-3">
+                    <div class="w-1/2">
+                        <label class="text-sm text-gray-400">Nombre</label>
+                        <input type="text" formControlName="nombre" 
+                            [ngClass]="{'border-red-500': nombre?.invalid && (nombre?.dirty || nombre?.touched), 'border-zinc-800': !(nombre?.invalid && (nombre?.dirty || nombre?.touched))}"
+                            class="w-full bg-black border rounded-lg px-4 py-2 mt-1 focus:outline-none focus:border-green-500 text-sm transition-colors">
+                        <div *ngIf="nombre?.invalid && (nombre?.dirty || nombre?.touched)" class="text-red-500 text-[10px] mt-1 leading-tight">
+                            <span *ngIf="nombre?.hasError('required')">Requerido.</span>
+                            <span *ngIf="nombre?.hasError('pattern')">Solo letras.</span>
+                            <span *ngIf="nombre?.hasError('maxlength')">Max 18 letras.</span>
+                        </div>
+                    </div>
+                    <div class="w-1/2">
+                        <label class="text-sm text-gray-400">Apellido</label>
+                        <input type="text" formControlName="apellido" 
+                            [ngClass]="{'border-red-500': apellido?.invalid && (apellido?.dirty || apellido?.touched), 'border-zinc-800': !(apellido?.invalid && (apellido?.dirty || apellido?.touched))}"
+                            class="w-full bg-black border rounded-lg px-4 py-2 mt-1 focus:outline-none focus:border-green-500 text-sm transition-colors">
+                        <div *ngIf="apellido?.invalid && (apellido?.dirty || apellido?.touched)" class="text-red-500 text-[10px] mt-1 leading-tight">
+                            <span *ngIf="apellido?.hasError('required')">Requerido.</span>
+                            <span *ngIf="apellido?.hasError('pattern')">Solo letras.</span>
+                            <span *ngIf="apellido?.hasError('maxlength')">Max 18 letras.</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="text-sm text-gray-400">Nombre de Usuario</label>
+                    <input type="text" formControlName="nombreUsuario" 
+                        [ngClass]="{'border-red-500': nombreUsuario?.invalid && (nombreUsuario?.dirty || nombreUsuario?.touched), 'border-zinc-800': !(nombreUsuario?.invalid && (nombreUsuario?.dirty || nombreUsuario?.touched))}"
+                        class="w-full bg-black border rounded-lg px-4 py-2 mt-1 focus:outline-none focus:border-green-500 text-sm transition-colors">
+                    <div *ngIf="nombreUsuario?.invalid && (nombreUsuario?.dirty || nombreUsuario?.touched)" class="text-red-500 text-[10px] mt-1">
+                        <span *ngIf="nombreUsuario?.hasError('required')">El nombre de usuario es obligatorio.</span>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-sm text-gray-400">Correo Electrónico</label>
+                    <input type="email" formControlName="correo" 
+                        [ngClass]="{'border-red-500': correo?.invalid && (correo?.dirty || correo?.touched), 'border-zinc-800': !(correo?.invalid && (correo?.dirty || correo?.touched))}"
+                        class="w-full bg-black border rounded-lg px-4 py-2 mt-1 focus:outline-none focus:border-green-500 text-sm transition-colors">
+                    <div *ngIf="correo?.invalid && (correo?.dirty || correo?.touched)" class="text-red-500 text-[10px] mt-1">
+                        <span *ngIf="correo?.hasError('required')">El correo es obligatorio.</span>
+                        <span *ngIf="correo?.hasError('email')">Formato de correo inválido.</span>
+                    </div>
+                </div>
+
+                <div class="flex gap-3">
+                    <div class="w-1/2">
+                        <label class="text-sm text-gray-400">Contraseña</label>
+                        <input type="password" formControlName="clave" 
+                            [ngClass]="{'border-red-500': clave?.invalid && (clave?.dirty || clave?.touched), 'border-zinc-800': !(clave?.invalid && (clave?.dirty || clave?.touched))}"
+                            class="w-full bg-black border rounded-lg px-4 py-2 mt-1 focus:outline-none focus:border-green-500 text-sm transition-colors">
+                        <div *ngIf="clave?.invalid && (clave?.dirty || clave?.touched)" class="text-red-500 text-[10px] mt-1 leading-tight">
+                            <span *ngIf="clave?.hasError('required')">Requerida.</span>
+                            <span *ngIf="clave?.hasError('pattern')">Min 8 chars, 1 mayúscula, 1 número.</span>
+                        </div>
+                    </div>
+                    <div class="w-1/2">
+                        <label class="text-sm text-gray-400">Repetir Clave</label>
+                        <input type="password" formControlName="repiteClave" 
+                            [ngClass]="{'border-red-500': repiteClave?.invalid && (repiteClave?.dirty || repiteClave?.touched), 'border-zinc-800': !(repiteClave?.invalid && (repiteClave?.dirty || repiteClave?.touched))}"
+                            class="w-full bg-black border rounded-lg px-4 py-2 mt-1 focus:outline-none focus:border-green-500 text-sm transition-colors">
+                    </div>
+                </div>
+                <div *ngIf="formularioRegistro.hasError('clavesNoIguales') && (clave?.dirty || clave?.touched) && (repiteClave?.dirty || repiteClave?.touched)" class="text-red-500 text-xs text-center">
+                    Las contraseñas no coinciden.
+                </div>
+
+                <div>
+                    <label class="text-sm text-gray-400">Fecha de Nacimiento</label>
+                    <input type="date" formControlName="fechaNacimiento" 
+                        [ngClass]="{'border-red-500': fechaNacimiento?.invalid && (fechaNacimiento?.dirty || fechaNacimiento?.touched), 'border-zinc-800': !(fechaNacimiento?.invalid && (fechaNacimiento?.dirty || fechaNacimiento?.touched))}"
+                        class="w-full bg-black border rounded-lg px-4 py-2 mt-1 focus:outline-none focus:border-green-500 text-sm transition-colors" style="color-scheme: dark;">
+                    <div *ngIf="fechaNacimiento?.invalid && (fechaNacimiento?.dirty || fechaNacimiento?.touched)" class="text-red-500 text-[10px] mt-1">
+                        <span *ngIf="fechaNacimiento?.hasError('required')">La fecha es obligatoria.</span>
+                        <span *ngIf="fechaNacimiento?.hasError('fechaFutura')">No puedes poner fechas futuras.</span>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-sm text-gray-400">Descripción (Opcional)</label>
+                    <textarea formControlName="descripcion" rows="2" 
+                            [ngClass]="{'border-red-500': descripcion?.invalid && (descripcion?.dirty || descripcion?.touched), 'border-zinc-800': !(descripcion?.invalid && (descripcion?.dirty || descripcion?.touched))}"
+                            class="w-full bg-black border rounded-lg px-4 py-2 mt-1 focus:outline-none focus:border-green-500 text-sm resize-none transition-colors"></textarea>
+                    <div *ngIf="descripcion?.invalid && (descripcion?.dirty || descripcion?.touched)" class="text-red-500 text-[10px] mt-1">
+                        <span *ngIf="descripcion?.hasError('maxlength')">Máximo 250 caracteres.</span>
+                    </div>
+                </div>
+
+                <div class="pt-2">
+                    <label class="text-sm text-gray-400 block mb-2">Rol del Usuario</label>
+                    <div class="flex gap-4">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="radio" formControlName="rol" value="usuario" class="accent-green-500 w-4 h-4">
+                            <span class="text-sm">Usuario</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="radio" formControlName="rol" value="admin" class="accent-green-500 w-4 h-4">
+                            <span class="text-sm">Administrador</span>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" [disabled]="formularioRegistro.invalid || cargando()" 
+                        class="w-full mt-4 bg-green-500 text-black font-bold py-2.5 rounded-xl hover:bg-green-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                    {{ cargando() ? 'Procesando...' : 'Registrar Usuario' }}
+                </button>
+            </form>
+        </div>
+
+        <div class="w-full lg:w-2/3 bg-zinc-900 border border-white/5 rounded-2xl p-6 shadow-lg h-fit">
+            <h2 class="text-xl font-bold mb-6 text-white">Gestión de Usuarios</h2>
+            <a routerLink="/dashboard/estadisticas" class="bg-purple-600 mb-3 hover:bg-purple-500 text-white font-bold py-2 px-4 rounded-lg transition-colors flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                Ver Estadísticas
+            </a>
+            <div *ngIf="cargando() && usuarios().length === 0" class="text-center py-10">
+                <p class="text-green-500 animate-pulse font-semibold">Cargando usuarios...</p>
+            </div>
+
+            <div *ngIf="!cargando() || usuarios().length > 0" class="overflow-x-auto">
+                <table class="w-full text-left text-sm text-gray-400">
+                    <thead class="text-xs text-gray-500 uppercase bg-black/50">
+                        <tr>
+                            <th class="px-4 py-3 rounded-tl-lg">Usuario</th>
+                            <th class="px-4 py-3">Rol</th>
+                            <th class="px-4 py-3">Estado</th>
+                            <th class="px-4 py-3 rounded-tr-lg text-right">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let user of usuarios()" class="border-b border-zinc-800 last:border-0 hover:bg-white/5 transition-colors">
+                            <td class="px-4 py-4">
+                                <div class="font-bold text-white">{{ user.nombreUsuario }}</div>
+                                <div class="text-xs">{{ user.email || user.correo }}</div>
+                            </td>
+                            <td class="px-4 py-4">
+                                <span class="px-2 py-1 rounded-md text-[10px] font-extrabold tracking-wider"
+                                    [ngClass]="(user.rol === 'admin' || user.perfil === 'admin') ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30' : 'bg-blue-500/20 text-blue-400 border border-blue-500/30'">
+                                    {{ (user.rol || user.perfil) | uppercase }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-4">
+                                <span class="px-2 py-1 rounded-md text-xs flex items-center gap-2 w-fit font-semibold"
+                                    [ngClass]="user.activo !== false ? 'text-green-400' : 'text-red-400'">
+                                    <div class="w-2 h-2 rounded-full shadow-[0_0_8px_currentColor]" [ngClass]="user.activo !== false ? 'bg-green-400' : 'bg-red-400'"></div>
+                                    {{ user.activo !== false ? 'Activo' : 'Baja' }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-4 text-right">
+                                <button (click)="cambiarEstadoUsuario(user)" 
+                                        [disabled]="cargando()"
+                                        class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all disabled:opacity-50 cursor-pointer"
+                                        [ngClass]="user.activo !== false ? 'bg-red-500/10 text-red-500 hover:bg-red-500/20 hover:scale-105' : 'bg-green-500/10 text-green-500 hover:bg-green-500/20 hover:scale-105'">
+                                    {{ user.activo !== false ? 'Deshabilitar' : 'Habilitar' }}
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div *ngIf="usuarios().length === 0" class="text-center py-10 text-gray-500">
+                    No hay usuarios registrados en el sistema.
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div *ngIf="mostrarModal()" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm px-4">
+    <div class="bg-black border-t-4 p-8 rounded-2xl shadow-2xl w-full max-w-sm text-center transform transition-all"
+        [ngClass]="esError() ? 'border-red-500' : 'border-green-400'">
+        <p class="text-white text-lg mb-6 font-semibold">{{ mensajeModal() }}</p>
+        <button (click)="cerrarModal()" 
+                class="w-full py-2 px-4 rounded-lg text-black font-bold transition-colors"
+                [ngClass]="esError() ? 'bg-red-500 hover:bg-red-400' : 'bg-green-500 hover:bg-green-400'">
+        Entendido
+        </button>
+    </div>
+</div>

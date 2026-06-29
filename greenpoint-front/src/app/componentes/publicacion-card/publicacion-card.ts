@@ -4,9 +4,15 @@ import { Auth } from '../../servicios/auth';
 import { Publicaciones } from '../../servicios/publicaciones';
 import { firstValueFrom } from 'rxjs';
 import { RouterLink } from '@angular/router';
+import { TiempoHacePipe } from '../../pipes/tiempo-hace-pipe';
+import { RecortarTextoPipe } from '../../pipes/recortar-texto-pipe';
+import { CensuradorPipe } from '../../pipes/censurador-pipe';
+import {CopiarEnlace} from '../../directivas/copiar-enlace';
+import { HoverAnimado } from '../../directivas/hover-animado';
+import { AutoFocus } from '../../directivas/auto-focus';
 @Component({
   selector: 'app-publicacion-card',
-  imports: [CommonModule,RouterLink],
+  imports: [CommonModule,RouterLink,TiempoHacePipe,RecortarTextoPipe,CensuradorPipe,CopiarEnlace,HoverAnimado,AutoFocus],
   templateUrl: './publicacion-card.html',
   styleUrl: './publicacion-card.css',
 })
@@ -44,7 +50,8 @@ export class PublicacionCard implements OnInit {
   paginaComentarios = 1;
   totalComentarios = signal<number>(0);
   cargandoMas = signal<boolean>(false);
-
+  // --- Estado de expansión del posteo ---
+  expandido: boolean = false;
 
   ngOnInit() {
     this.cantidadLikes.set(this.publicacion.likes?.length || 0);
@@ -210,7 +217,7 @@ export class PublicacionCard implements OnInit {
     
     if (!user) return false;
     
-    return this.publicacion.usuario._id === user.id || user.perfil === 'administrador';
+    return this.publicacion.usuario._id === user.id || user.perfil === 'admin';
   }
   // --- Lógica de Edición ---
   puedeEditarComentario(comentario: any): boolean {

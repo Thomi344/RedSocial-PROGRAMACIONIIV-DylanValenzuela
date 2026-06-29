@@ -1,0 +1,71 @@
+<div class="min-h-screen bg-[#09090b] text-white pt-24 px-6 pb-12 relative">
+    <div class="max-w-7xl mx-auto">
+        
+        <div class="mb-6">
+            <a routerLink="/dashboard/usuarios" class="text-gray-400 hover:text-white flex items-center gap-2 transition-colors w-fit">
+                <svg class="w-5 h-5 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                Volver a Usuarios
+            </a>
+        </div>
+
+        <div class="bg-zinc-900 border border-white/5 rounded-2xl p-6 shadow-lg mb-8 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div>
+                <h2 class="text-2xl font-bold text-green-500 mb-1">Métricas y Estadísticas</h2>
+                <p class="text-gray-400 text-sm">Analizá el rendimiento de tu red social en tiempo real.</p>
+            </div>
+
+            <form [formGroup]="formularioFechas" (ngSubmit)="cargarDatos()" class="flex items-end gap-4 bg-black/40 p-3 rounded-xl border border-white/5">
+                <div>
+                    <label class="block text-xs text-gray-500 uppercase tracking-wider mb-1">Desde</label>
+                    <input type="date" formControlName="inicio" class="bg-black border border-white/10 rounded-lg px-3 py-2 text-sm focus:border-green-500 outline-none transition-colors" style="color-scheme: dark;">
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-500 uppercase tracking-wider mb-1">Hasta</label>
+                    <input type="date" formControlName="fin" class="bg-black border border-white/10 rounded-lg px-3 py-2 text-sm focus:border-green-500 outline-none transition-colors" style="color-scheme: dark;">
+                </div>
+                <button type="submit" [disabled]="cargando() || formularioFechas.invalid" class="bg-green-500 hover:bg-green-400 text-black font-bold px-5 py-2 rounded-lg transition-colors disabled:opacity-50 h-[38px] flex items-center justify-center">
+                    <span *ngIf="!cargando()">Filtrar</span>
+                    <svg *ngIf="cargando()" class="animate-spin h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                </button>
+            </form>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <div class="lg:col-span-2 bg-zinc-900 border border-white/5 rounded-2xl p-6 shadow-lg">
+                <h3 class="text-lg font-bold text-white mb-4">Publicaciones por Usuario</h3>
+                <div class="relative h-[300px] w-full flex items-center justify-center">
+                    <canvas *ngIf="pubPorUsuarioData().labels?.length; else sinDatos" baseChart
+                        [type]="'bar'" [data]="pubPorUsuarioData()" [options]="barChartOptions">
+                    </canvas>
+                </div>
+            </div>
+
+            <div class="bg-zinc-900 border border-white/5 rounded-2xl p-6 shadow-lg">
+                <h3 class="text-lg font-bold text-white mb-4">Volumen de Comentarios</h3>
+                <div class="relative h-[300px] w-full flex items-center justify-center">
+                    <canvas *ngIf="comentariosTotalesData().datasets[0].data[0] !== 0; else sinDatos" baseChart
+                        [type]="'doughnut'" [data]="comentariosTotalesData()" [options]="doughnutChartOptions">
+                    </canvas>
+                </div>
+            </div>
+
+            <div class="lg:col-span-3 bg-zinc-900 border border-white/5 rounded-2xl p-6 shadow-lg">
+                <h3 class="text-lg font-bold text-white mb-4">Comentarios por Publicación</h3>
+                <div class="relative h-[350px] w-full flex items-center justify-center">
+                    <canvas *ngIf="comPorPubData().labels?.length; else sinDatos" baseChart
+                        [type]="'line'" [data]="comPorPubData()" [options]="lineChartOptions">
+                    </canvas>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<ng-template #sinDatos>
+    <div class="text-gray-500 text-sm flex flex-col items-center justify-center h-full">
+        <svg class="w-10 h-10 mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
+        No hay datos para las fechas seleccionadas
+    </div>
+</ng-template>

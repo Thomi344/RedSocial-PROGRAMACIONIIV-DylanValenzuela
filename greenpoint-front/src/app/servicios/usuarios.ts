@@ -36,5 +36,25 @@ export class Usuarios {
   obtenerUsuario(id: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
   }
+  
+  // === Funciones Administrador ===
+  // --- 4. Traer todos los usuarios (solo admin) ---
+  obtenerTodosUsuarios(): Observable<any> {
+    return this.http.get(this.apiUrl)
+  }
+  //--- 5. Crear un nuevo usuario (solo admin) ---
+  crearUsuario(datos: any): Observable<any> {
+    return this.http.post(this.apiUrl, datos);
+  }
+  //--- 6. Desactivar un usuario (solo admin) ---
+  desactivarUsuario(id: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}/desactivar`);
+  }
+  // --- 7. Activar un usuario (solo admin) ---
+  activarUsuario(id: string): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${id}/activar`, {});
+  }
 }
+
+
 
